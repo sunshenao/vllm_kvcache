@@ -43,7 +43,7 @@ class RoundRobinProxy:
 
 
 async def main():
-    proxy = RoundRobinProxy([8100, 8200])
+    proxy = RoundRobinProxy([8100,8200])
     app = web.Application()
     app.router.add_route('*', '/{path:.*}', proxy.handle_request)
 

@@ -2626,6 +2626,17 @@ class KVTransferConfig(BaseModel):
     # The KV connector port, used to build distributed connection
     kv_port: int = 14579
 
+    layer_transfer: bool = False
+    # send_stream: torch.cuda.Stream = torch.cuda.Stream()
+    # recv_stream: torch.cuda.Stream = torch.cuda.Stream()
+    # compute: torch.cuda.Stream = torch.cuda.Stream()
+
+    @property
+    def is_layerwise_kv_transfer(self) -> bool: 
+        return self.kv_connector is not None and self.kv_connector in [
+            "LayerwisePyNcclConnector"
+        ]
+    
     def compute_hash(self) -> str:
         """
         WARNING: Whenever a new field is added to this config,

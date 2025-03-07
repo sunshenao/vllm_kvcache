@@ -8,10 +8,19 @@ from vllm.model_executor.model_loader.loader import (BaseModelLoader,
 from vllm.model_executor.model_loader.utils import (
     get_architecture_class_name, get_model_architecture)
 
+from vllm.distributed.kv_transfer.kv_transfer_utils import (
+    maybe_register_PD_disagg_hooks)
+
 
 def get_model(*, vllm_config: VllmConfig) -> nn.Module:
     loader = get_model_loader(vllm_config.load_config)
-    return loader.load_model(vllm_config=vllm_config)
+    # return loader.load_model(vllm_config=vllm_config)
+
+    model = loader.load_model(vllm_config=vllm_config)
+
+    maybe_register_PD_disagg_hooks(model, vllm_config)
+
+    return model
 
 
 __all__ = [

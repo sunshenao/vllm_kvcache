@@ -1,12 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
+from concurrent.futures.thread import _threads_queues
 import copy
+import threading
 import time
 from collections import Counter as collectionsCounter
 from collections import deque
 from contextlib import contextmanager
 from dataclasses import dataclass
 from functools import partial
+from turtle import Turtle
+from regex import F
+from vllm.core.scheduler import SchedulerOutputs, ScheduledSequenceGroup
+
 from typing import (TYPE_CHECKING, Callable, ClassVar, Deque, Dict, Iterable,
                     List, Mapping, NamedTuple, Optional)
 from typing import Sequence as GenericSequence
@@ -19,8 +26,7 @@ import vllm.envs as envs
 from vllm.config import (DecodingConfig, LoRAConfig, ModelConfig,
                          ObservabilityConfig, ParallelConfig, SchedulerConfig,
                          VllmConfig)
-from vllm.core.scheduler import (ScheduledSequenceGroup, Scheduler,
-                                 SchedulerOutputs)
+
 from vllm.engine.arg_utils import EngineArgs
 from vllm.engine.metrics_types import StatLoggerBase, Stats
 from vllm.engine.output_processor.interfaces import (
@@ -56,6 +62,7 @@ from vllm.transformers_utils.detokenizer import Detokenizer
 from vllm.transformers_utils.tokenizer import AnyTokenizer
 from vllm.transformers_utils.tokenizer_group import (
     BaseTokenizerGroup, init_tokenizer_from_configs)
+from vllm.transformers_utils.tokenizers.mistral import truncate_tool_call_ids
 from vllm.usage.usage_lib import (UsageContext, is_usage_stats_enabled,
                                   usage_message)
 from vllm.utils import Counter, Device, deprecate_kwargs, weak_bind
@@ -90,12 +97,84 @@ class OutputData(NamedTuple):
     # outputs from multiple steps.
     is_first_step_output: Optional[bool]
     skip: List[int]
+    temp: List[int]
+
+    # def add(self,data):
+    #     self.outputs
+
+
+class ThreadSafeDeque:
+    def __init__(self):
+        self.deque = deque()
+        self.lock = threading.Lock()
+
+    def append(self, item: OutputData) -> None:
+        with self.lock:
+            self.deque.append(item)
+
+    def appendleft(self, item: OutputData) -> None:
+        with self.lock:
+            self.deque.appendleft(item)
+
+    def pop(self) -> Optional[OutputData]:
+        with self.lock:
+            if not self.deque:
+                return None
+            return self.deque.pop()
+
+    def popleft(self) -> Optional[OutputData]:
+        with self.lock:
+            if not self.deque:
+                return None
+            return self.deque.popleft()
+
+    def extend(self, items: list[OutputData]) -> None:
+        with self.lock:
+            self.deque.extend(items)
+
+    def extendleft(self, items: list[OutputData]) -> None:
+        with self.lock:
+            self.deque.extendleft(items)
+
+    def clear(self) -> None:
+        with self.lock:
+            self.deque.clear()
+
+    def __len__(self) -> int:
+        with self.lock:
+            return len(self.deque)
+
+    def __iter__(self):
+        with self.lock:
+            return iter(deque(self.deque))
+        
+    def __getitem__(self, index: int) -> OutputData:
+        with self.lock:
+            if isinstance(index, int):
+                try:
+                    return self.deque[index]
+                except IndexError:
+                    raise IndexError("deque index out of range")
+            else:
+                raise TypeError("Indices must be integers")
+
+    def __setitem__(self, index: int, value: OutputData) -> None:
+        with self.lock:
+            if isinstance(index, int):
+                try:
+                    self.deque[index] = value
+                except IndexError:
+                    raise IndexError("deque index out of range")
+            else:
+                raise TypeError("Indices must be integers")
 
 
 class SchedulerContext:
 
-    def __init__(self, multi_step_stream_outputs: bool = False):
-        self.output_queue: Deque[OutputData] = deque()
+    def __init__(self, multi_step_stream_outputs: bool = False,lock = None):
+        self.output_queue: ThreadSafeDeque = ThreadSafeDeque()
+        self.output_queue_transfer: ThreadSafeDeque = ThreadSafeDeque()
+        # self.output_queue: Dict[int,OutputData] = Dict()
         self.request_outputs: List[Union[RequestOutput,
                                          PoolingRequestOutput]] = []
         self.seq_group_metadata_list: Optional[
@@ -103,12 +182,15 @@ class SchedulerContext:
         self.scheduler_outputs: Optional[SchedulerOutputs] = None
 
         self.multi_step_stream_outputs: bool = multi_step_stream_outputs
+        
 
     def append_output(self, outputs: List[SamplerOutput],
                       seq_group_metadata_list: List[SequenceGroupMetadata],
                       scheduler_outputs: SchedulerOutputs, is_async: bool,
                       is_last_step: bool,
-                      is_first_step_output: Optional[bool]):
+                      is_first_step_output: Optional[bool],
+                      temp = None):
+        
         self.output_queue.append(
             OutputData(outputs=outputs,
                        seq_group_metadata_list=seq_group_metadata_list,
@@ -116,7 +198,25 @@ class SchedulerContext:
                        is_async=is_async,
                        is_last_step=is_last_step,
                        is_first_step_output=is_first_step_output,
-                       skip=[]))
+                       skip=[],
+                       temp=temp))
+    
+    def append_output_transfer(self, outputs: List[SamplerOutput],
+                      seq_group_metadata_list: List[SequenceGroupMetadata],
+                      scheduler_outputs: SchedulerOutputs, is_async: bool,
+                      is_last_step: bool,
+                      is_first_step_output: Optional[bool],
+                      temp = None):
+        
+        self.output_queue_transfer.append(
+            OutputData(outputs=outputs,
+                       seq_group_metadata_list=seq_group_metadata_list,
+                       scheduler_outputs=scheduler_outputs,
+                       is_async=is_async,
+                       is_last_step=is_last_step,
+                       is_first_step_output=is_first_step_output,
+                       skip=[],
+                       temp=temp))
 
 
 class LLMEngine:
@@ -214,6 +314,8 @@ class LLMEngine:
         input_registry: InputRegistry = INPUT_REGISTRY,
         mm_registry: MultiModalRegistry = MULTIMODAL_REGISTRY,
         use_cached_outputs: bool = False,
+        transfer_queue = None,
+        transfered_con = None
     ) -> None:
 
         self.vllm_config = vllm_config
@@ -239,6 +341,15 @@ class LLMEngine:
             use_cached_outputs,
         )
 
+        self.lock_list = {
+            'transfered':threading.Lock(),
+            'scheduler': threading.Lock(),
+            'execute': threading.Lock(),
+            'count':threading.Lock(),
+            'temp':threading.Lock(),
+            # 'context':threading.Lock(),
+        }
+        transfer_queue = transfer_queue
         self.log_stats = log_stats
         self.use_cached_outputs = use_cached_outputs
 
@@ -328,6 +439,12 @@ class LLMEngine:
             for _ in range(self.parallel_config.pipeline_parallel_size)
         ]
 
+        # self.scheduler_contexts_prefill = [
+        #     SchedulerContext(multi_step_stream_outputs=self.scheduler_config.
+        #                      multi_step_stream_outputs)
+        #     for _ in range(self.parallel_config.pipeline_parallel_size)
+        # ]
+
         if self.model_config.use_async_output_proc:
             process_model_outputs = weak_bind(self._process_model_outputs)
 
@@ -346,12 +463,18 @@ class LLMEngine:
         # Create the scheduler.
         # NOTE: the cache_config here have been updated with the numbers of
         # GPU and CPU blocks, which are profiled in the distributed executor.
+        if self.vllm_config.kv_transfer_config and self.vllm_config.kv_transfer_config.is_kv_consumer:
+            from vllm.core.disagg_scheduler import ( Scheduler)
+        else:
+            from vllm.core.scheduler import (Scheduler)
         self.scheduler = [
             Scheduler(
                 self.scheduler_config, self.cache_config, self.lora_config,
                 self.parallel_config.pipeline_parallel_size,
                 self.async_callbacks[v_id]
-                if self.model_config.use_async_output_proc else None)
+                if self.model_config.use_async_output_proc else None,
+                self.vllm_config.kv_transfer_config,
+                transfered_con=transfered_con)
             for v_id in range(self.parallel_config.pipeline_parallel_size)
         ]
 
@@ -977,7 +1100,9 @@ class LLMEngine:
 
     def _process_model_outputs(self,
                                ctx: SchedulerContext,
-                               request_id: Optional[str] = None) -> None:
+                               request_id: Optional[str] = None,
+                               transfer_data: Optional[bool] = None,
+                               data_list = None) -> None:
         """Apply the model output to the sequences in the scheduled seq groups
         and return responses.
 
@@ -987,19 +1112,59 @@ class LLMEngine:
 
         now = time.time()
 
-        if len(ctx.output_queue) == 0:
-            return None
 
         # Get pending async postprocessor
-        if request_id:
-            # When we process only one request, no pop is required
-            # (since later we will process all of the rest)
+    
+        if transfer_data: # len(ctx.output_queue_transfer) != 0
+            if len(ctx.output_queue_transfer) == 0:
+                return None
             (outputs, seq_group_metadata_list, scheduler_outputs, is_async,
-             is_last_step, is_first_step_output, skip) = ctx.output_queue[0]
-        else:
-            (outputs, seq_group_metadata_list, scheduler_outputs, is_async,
-             is_last_step, is_first_step_output,
-             skip) = ctx.output_queue.popleft()
+                is_last_step, is_first_step_output,
+                skip,temp) =  ctx.output_queue_transfer.popleft() #ctx.output_queue.popleft()
+        else: 
+            if len(ctx.output_queue) == 0:
+                return None
+            if request_id:
+                # When we process only one request, no pop is required
+                # (since later we will process all of the rest)
+                (outputs, seq_group_metadata_list, scheduler_outputs, is_async,
+                is_last_step, is_first_step_output, skip,temp) = ctx.output_queue[0]
+                print('_+'*100)
+                # flag = False
+                # for seq_group in seq_group_metadata_list:
+                #     if request_id == seq_group.request_id:
+                #         flag = True
+                #         break
+                # if not flag:
+                #     (outputs, seq_group_metadata_list, scheduler_outputs, is_async,
+                #         is_last_step, is_first_step_output, skip,temp) = ctx.output_queue_transfer[0]
+                    
+            else:
+                (outputs, seq_group_metadata_list, scheduler_outputs, is_async,
+                is_last_step, is_first_step_output,
+                skip,temp) = ctx.output_queue.popleft()
+        
+        # if len(seq_group_metadata_list) != len(
+        #     scheduler_outputs.scheduled_seq_groups):
+        #     length = min(len(seq_group_metadata_list),len(
+        #     scheduler_outputs.scheduled_seq_groups))
+        #     print(temp)
+        #     print(len(seq_group_metadata_list),len(
+        #     scheduler_outputs.scheduled_seq_groups))
+
+        #     delete_list = []
+            
+        #     for index in range(len(seq_group_metadata_list)):
+        #         seq0 = seq_group_metadata_list[index]
+        #         flag = False
+        #         for seq1 in scheduler_outputs.scheduled_seq_groups:
+        #             if seq0.request_id == seq1.seq_group.request_id:
+        #                 flag = True
+        #                 break
+        #         if not flag:
+        #             delete_list.append(index)
+        #     self.remove_elements(seq_group_metadata_list,delete_list)   
+            
 
         # Sanity check
         assert len(seq_group_metadata_list) == len(
@@ -1118,6 +1283,7 @@ class LLMEngine:
             seq_group.maybe_set_first_token_time(now)
             if not seq_group.is_prefill():
                 seq_group.set_last_token_time(now)
+            # 在这里创建的output函数
             request_output = RequestOutputFactory.create(
                 seq_group,
                 self.seq_id_to_seq_group,
@@ -1254,7 +1420,69 @@ class LLMEngine:
                 else:
                     seq.append_token_id(sample.output_token, sample.logprobs)
 
-    def step(self) -> List[Union[RequestOutput, PoolingRequestOutput]]:
+
+    def decode_add_request(self,tranfer_data=True, transfer_queue=None):
+        #  对于decode增加请求的函数
+        virtual_engine = 0
+
+
+        (seq_group_metadata_list, scheduler_outputs,
+        allow_async_output_proc
+        ) = self.scheduler[virtual_engine].scheduler_decode_transfer(tranfer_data,transfer_queue)
+        
+        if seq_group_metadata_list is None:
+            # self.execute_lock.release()
+            return None
+
+        
+        finished_requests_ids = self.scheduler[
+            virtual_engine].get_and_reset_finished_requests_ids()
+
+
+        assert seq_group_metadata_list is not None
+        assert scheduler_outputs is not None
+
+
+        
+        last_sampled_token_ids = \
+            self._get_last_sampled_token_ids(virtual_engine)
+
+        execute_model_req = ExecuteModelRequest(
+            seq_group_metadata_list=seq_group_metadata_list,
+            blocks_to_swap_in=scheduler_outputs.blocks_to_swap_in,
+            blocks_to_swap_out=scheduler_outputs.blocks_to_swap_out,
+            blocks_to_copy=scheduler_outputs.blocks_to_copy,
+            num_lookahead_slots=scheduler_outputs.num_lookahead_slots,
+            running_queue_size=scheduler_outputs.running_queue_size,
+            finished_requests_ids=finished_requests_ids,
+            execute_lock=None,
+            transfered=True,
+            last_sampled_token_ids=last_sampled_token_ids)
+
+        
+        outputs = self.model_executor.execute_model(
+            execute_model_req=execute_model_req)
+            
+
+        # self._advance_to_next_step(
+        #     outputs[0], seq_group_metadata_list,
+        #     scheduler_outputs.scheduled_seq_groups)
+
+        for scheduled_seq_group in scheduler_outputs.scheduled_seq_groups:
+            seq_group = scheduled_seq_group.seq_group
+            if seq_group and not seq_group.is_decode:
+                seq_group.is_decode = True
+
+        # 数据传输阶段，将数据变为decode模式 
+        # with threading.lock:
+        # for scheduler in self.scheduler:
+        #     for seq_group in scheduler.transfered:
+        #         if seq_group and not seq_group.is_decode and not seq_group.first_seq.is_prefill():
+        #             seq_group.is_decode = True
+
+
+
+    def step(self,tranfer_data=False,transfer_queue=None) -> List[Union[RequestOutput, PoolingRequestOutput]]:
         """Performs one decoding iteration and returns newly generated results.
 
         .. figure:: https://i.imgur.com/sv2HssD.png
@@ -1333,7 +1561,10 @@ class LLMEngine:
             # Schedule iteration
             (seq_group_metadata_list, scheduler_outputs,
              allow_async_output_proc
-             ) = self.scheduler[virtual_engine].schedule()
+            ) = self.scheduler[virtual_engine].schedule(tranfer_data,transfer_queue,self.lock_list)
+
+            if seq_group_metadata_list is None:
+                return []
 
             ctx.seq_group_metadata_list = seq_group_metadata_list
             ctx.scheduler_outputs = scheduler_outputs
@@ -1342,8 +1573,11 @@ class LLMEngine:
                 virtual_engine].get_and_reset_finished_requests_ids()
 
             # Maybe switch from async mode to sync mode
-            if not allow_async_output_proc and len(ctx.output_queue) > 0:
-                self._process_model_outputs(ctx=ctx)
+            if not allow_async_output_proc:
+                self._process_model_outputs(ctx=ctx,transfer_data=tranfer_data)
+
+            if len(ctx.output_queue_transfer) > 0 and not tranfer_data:
+                self._process_model_outputs(ctx=ctx,transfer_data=True)
 
             if (self.scheduler_config.is_multi_step
                     and scheduler_outputs.num_lookahead_slots > 0):
@@ -1380,8 +1614,9 @@ class LLMEngine:
                 last_sampled_token_ids=last_sampled_token_ids)
 
             if allow_async_output_proc:
-                execute_model_req.async_callback = self.async_callbacks[
-                    virtual_engine]
+                 execute_model_req.async_callback = None
+                # execute_model_req.async_callback = self.async_callbacks[
+                #     virtual_engine]
 
             outputs = self.model_executor.execute_model(
                 execute_model_req=execute_model_req)
@@ -1393,8 +1628,8 @@ class LLMEngine:
         else:
             # Nothing scheduled => If there is pending async postprocessor,
             # then finish it here.
-            if len(ctx.output_queue) > 0:
-                self._process_model_outputs(ctx=ctx)
+            # if len(ctx.output_queue) > 0:
+            #     self._process_model_outputs(ctx=ctx,transfer_data=tranfer_data)
             # No outputs in this case
             outputs = []
 
@@ -1414,13 +1649,24 @@ class LLMEngine:
             is_first_step_output: bool = False if not seq_group_metadata_list \
                 else seq_group_metadata_list[0].state.num_steps == 1
 
-            # Add results to the output_queue
-            ctx.append_output(outputs=outputs,
-                              seq_group_metadata_list=seq_group_metadata_list,
-                              scheduler_outputs=scheduler_outputs,
-                              is_async=allow_async_output_proc,
-                              is_last_step=True,
-                              is_first_step_output=is_first_step_output)
+            # Add results to the output_queue     
+            if not tranfer_data:
+                ctx.append_output(outputs=outputs,
+                                seq_group_metadata_list=seq_group_metadata_list,
+                                scheduler_outputs=scheduler_outputs,
+                                is_async=allow_async_output_proc,
+                                is_last_step=True,
+                                is_first_step_output=is_first_step_output,
+                                temp=[len(seq_group_metadata_list),len(scheduler_outputs.scheduled_seq_groups)])
+            else:
+                ctx.append_output_transfer(outputs=outputs,
+                                seq_group_metadata_list=seq_group_metadata_list,
+                                scheduler_outputs=scheduler_outputs,
+                                is_async=allow_async_output_proc,
+                                is_last_step=True,
+                                is_first_step_output=is_first_step_output,
+                                temp=[len(seq_group_metadata_list),len(scheduler_outputs.scheduled_seq_groups)])
+            
 
             if outputs and allow_async_output_proc:
                 assert len(outputs) == 1, (
@@ -1429,10 +1675,20 @@ class LLMEngine:
                 self._advance_to_next_step(
                     outputs[0], seq_group_metadata_list,
                     scheduler_outputs.scheduled_seq_groups)
+            
+                if len(ctx.output_queue) > 0:
+                    self._process_model_outputs(ctx=ctx)
+                # if len(ctx.output_queue_transfer) > 0 and tranfer_data:
+                #     self._process_model_outputs(ctx=ctx,transfer_data=tranfer_data)
+                # elif len(ctx.output_queue) > 0 and not tranfer_data:
+                #     self._process_model_outputs(ctx=ctx)
+            # if self.vllm_config.kv_transfer_config and self.vllm_config.kv_transfer_config.is_kv_producer:
+            #     if len(ctx.output_queue) > 0:
+            #         self._process_model_outputs(ctx=ctx)
 
             # Check if need to run the usual non-async path
             if not allow_async_output_proc:
-                self._process_model_outputs(ctx=ctx)
+                self._process_model_outputs(ctx=ctx,transfer_data=tranfer_data)
 
                 # Log stats.
                 self.do_log_stats(scheduler_outputs, outputs)
@@ -1445,8 +1701,8 @@ class LLMEngine:
 
         if not self.has_unfinished_requests():
             # Drain async postprocessor (if exists)
-            if len(ctx.output_queue) > 0:
-                self._process_model_outputs(ctx=ctx)
+            
+            self._process_model_outputs(ctx=ctx,transfer_data=tranfer_data)
             assert len(ctx.output_queue) == 0
 
             # Stop the execute model loop in parallel workers until there are
@@ -1456,6 +1712,15 @@ class LLMEngine:
             # queued control plane messages, such as add/remove lora adapters.
             logger.debug("Stopping remote worker execution loop.")
             self.model_executor.stop_remote_worker_execution_loop()
+
+        # 数据传输阶段，将数据变为decode模式
+        with self.lock_list['transfered']:
+            for scheduler in self.scheduler:
+                for seq_group in scheduler.transfered:
+                    if seq_group and not seq_group.is_decode and not seq_group.first_seq.is_prefill():
+                        seq_group.is_decode = True
+                    # else:
+                    #     scheduler.waiting.extend([seq_group])
 
         return ctx.request_outputs
 
@@ -1572,6 +1837,9 @@ class LLMEngine:
             len(scheduler.swapped) for scheduler in self.scheduler)
         num_waiting_sys = sum(
             len(scheduler.waiting) for scheduler in self.scheduler)
+        
+        num_transfered_sys = sum(
+            len(scheduler.transfered) for scheduler in self.scheduler)
 
         # KV Cache Usage in %
         num_total_gpu = self.cache_config.num_gpu_blocks
@@ -1629,7 +1897,7 @@ class LLMEngine:
             collectionsCounter([
                 running_request.lora_request.lora_name
                 for scheduler in self.scheduler
-                for running_request in scheduler.running
+                for running_request in (scheduler.running + scheduler.transfered)
                 if running_request.lora_request
             ]))
         waiting_lora_adapters = dict(
@@ -1777,6 +2045,7 @@ class LLMEngine:
             num_running_sys=num_running_sys,
             num_swapped_sys=num_swapped_sys,
             num_waiting_sys=num_waiting_sys,
+            num_transfered_sys=num_transfered_sys,
             #   KV Cache Usage in %
             gpu_cache_usage_sys=gpu_cache_usage_sys,
             cpu_cache_usage_sys=cpu_cache_usage_sys,
@@ -2023,3 +2292,9 @@ class LLMEngine:
                 sampling_params.logits_processors.extend(logits_processors)
 
         return sampling_params
+
+
+    def remove_elements(self,lst, indices):
+        for index in sorted(indices, reverse=True):
+            lst.pop(index)
+        return lst

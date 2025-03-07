@@ -196,6 +196,31 @@ class PyNcclCommunicator:
         self.nccl.ncclRecv(buffer_type(tensor.data_ptr()), tensor.numel(),
                            ncclDataTypeEnum.from_torch(tensor.dtype), src,
                            self.comm, cudaStream_t(stream.cuda_stream))
+        
+
+    async def async_send(self, tensor: torch.Tensor, dst: int, stream=None):
+        if self.disabled:
+            return
+        assert tensor.device == self.device, (
+            f"this nccl communicator is created to work on {self.device}, "
+            f"but the input tensor is on {tensor.device}")
+        if stream is None:
+            stream = current_stream()
+        self.nccl.ncclSend(buffer_type(tensor.data_ptr()), tensor.numel(),
+                           ncclDataTypeEnum.from_torch(tensor.dtype), dst,
+                           self.comm, cudaStream_t(stream.cuda_stream))
+
+    async def async_recv(self, tensor: torch.Tensor, src: int, stream=None):
+        if self.disabled:
+            return
+        assert tensor.device == self.device, (
+            f"this nccl communicator is created to work on {self.device}, "
+            f"but the input tensor is on {tensor.device}")
+        if stream is None:
+            stream = current_stream()
+        self.nccl.ncclRecv(buffer_type(tensor.data_ptr()), tensor.numel(),
+                           ncclDataTypeEnum.from_torch(tensor.dtype), src,
+                           self.comm, cudaStream_t(stream.cuda_stream))
 
     def broadcast(self, tensor: torch.Tensor, src: int, stream=None):
         if self.disabled:

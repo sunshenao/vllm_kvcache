@@ -56,7 +56,7 @@ class OpenAIServingCompletion(OpenAIServing):
             logger.info(
                 "Overwriting default completion sampling param with: %s",
                 diff_sampling_param)
-
+    # 进行计算的部分
     async def create_completion(
         self,
         request: CompletionRequest,
@@ -133,11 +133,11 @@ class OpenAIServingCompletion(OpenAIServing):
 
                 request_id_item = f"{request_id}-{i}"
 
-                self._log_inputs(request_id_item,
-                                 request_prompts[i],
-                                 params=sampling_params,
-                                 lora_request=lora_request,
-                                 prompt_adapter_request=prompt_adapter_request)
+                # self._log_inputs(request_id_item,
+                #                  request_prompts[i],
+                #                  params=sampling_params,
+                #                  lora_request=lora_request,
+                #                  prompt_adapter_request=prompt_adapter_request)
 
                 trace_headers = (None if raw_request is None else await
                                  self._get_trace_headers(raw_request.headers))

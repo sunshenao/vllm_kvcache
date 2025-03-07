@@ -8,6 +8,7 @@ MooncakePipe.
 
 But the logic can be extended to support other pipe and lookup buffer.
 """
+import asyncio
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import torch
@@ -44,6 +45,10 @@ class SimpleConnector(KVConnectorBase):
             logger.info(
                 "Initializing PyNcclConfig under kv_transfer_config %s",
                 self.config)
+        elif self.config.kv_connector == "LayerConnector":
+            from vllm.distributed.kv_transfer.kv_pipe.layer_pipe import (
+                LayerPipe)
+            
         elif self.config.kv_connector == "MooncakeConnector":
             # Check if MOONCAKE_CONFIG_PATH is set
             import os
@@ -66,11 +71,11 @@ class SimpleConnector(KVConnectorBase):
         self.producer_buffer: Optional[SimpleBuffer] = None
         self.consumer_buffer: Optional[SimpleBuffer] = None
 
-        self.producer_data_pipe: Union[PyNcclPipe, MooncakePipe]
-        self.consumer_data_pipe: Union[PyNcclPipe, MooncakePipe]
-        self.producer_signal_pipe: Union[PyNcclPipe, MooncakePipe]
-        self.consumer_signal_pipe: Union[PyNcclPipe, MooncakePipe]
-
+        self.producer_data_pipe: Union[PyNcclPipe, MooncakePipe,LayerPipe]
+        self.consumer_data_pipe: Union[PyNcclPipe, MooncakePipe,LayerPipe]
+        self.producer_signal_pipe: Union[PyNcclPipe, MooncakePipe,LayerPipe]
+        self.consumer_signal_pipe: Union[PyNcclPipe, MooncakePipe,LayerPipe]
+        self.stream = torch.cuda.Stream()
         # 2 pipes for every rank in the world
         port_offset_base = 2 * rank
 
@@ -90,6 +95,21 @@ class SimpleConnector(KVConnectorBase):
                     port_offset=port_offset_base + 1,
                     device="cpu",
                 )
+            
+            elif self.config.kv_connector == "LayerConnector":
+                self.producer_data_pipe = LayerPipe(
+                    local_rank=local_rank,
+                    config=self.config,
+                    port_offset=port_offset_base,
+                    stream=self.stream,
+                )
+                self.producer_signal_pipe = LayerPipe(
+                    local_rank=local_rank,
+                    config=self.config,
+                    port_offset=port_offset_base + 1,
+                    device="cpu",
+                )
+
             elif self.config.kv_connector == "MooncakeConnector":
                 self.producer_data_pipe = MooncakePipe(
                     local_rank=local_rank,
@@ -118,6 +138,22 @@ class SimpleConnector(KVConnectorBase):
                     port_offset=port_offset_base + 1,
                     device="cpu",
                 )
+
+            elif self.config.kv_connector == "LayerConnector":
+                self.consumer_data_pipe = LayerPipe(
+                    local_rank=local_rank,
+                    config=self.config,
+                    port_offset=port_offset_base,
+                     stream=self.stream,
+                )
+                self.consumer_signal_pipe = LayerPipe(
+                    local_rank=local_rank,
+                    config=self.config,
+                    port_offset=port_offset_base + 1,
+                    device="cpu",
+                )
+
+
             elif self.config.kv_connector == "MooncakeConnector":
                 self.consumer_data_pipe = MooncakePipe(
                     local_rank=local_rank,
@@ -192,6 +228,9 @@ class SimpleConnector(KVConnectorBase):
             keys = torch.cat(keys, dim=0)
             values = torch.cat(values, dim=0)
 
+
+            # send_stream = torch.cuda.Stream()
+            # with torch.cuda.stream(send_stream):
             self.insert(current_tokens,
                         torch.ones_like(current_tokens,
                                         dtype=bool), keys, values,
@@ -235,8 +274,10 @@ class SimpleConnector(KVConnectorBase):
             input_tokens_list.append(current_tokens)
             start_pos_list.append(start_pos)
 
+            # recv_stream = torch.cuda.Stream()
+            # with torch.cuda.stream(recv_stream):
             ret = self.select(current_tokens,
-                              torch.ones_like(current_tokens, dtype=bool))
+                            torch.ones_like(current_tokens, dtype=bool))
             if ret[0] is None:
                 # didn't find any match.
                 bypass_model_exec = False
@@ -262,7 +303,7 @@ class SimpleConnector(KVConnectorBase):
 
             # put received KV caches into paged memory
             for i in range(model_executable.model.start_layer,
-                           model_executable.model.end_layer):
+                        model_executable.model.end_layer):
 
                 kv_cache = kv_caches[i - model_executable.model.start_layer]
                 layer = model_executable.model.layers[i]
@@ -280,7 +321,8 @@ class SimpleConnector(KVConnectorBase):
                     layer.self_attn.attn._k_scale,
                     layer.self_attn.attn._v_scale,
                 )
-
+            
+            # print("kvcache：",keys.numel()*2/1024**2 + values.numel()*2/1024**2,"hidden: ",hidden.numel()*2/1024/1024)
             hidden_or_intermediate_states_for_one_req.append(hidden)
 
         if not bypass_model_exec:
@@ -292,6 +334,7 @@ class SimpleConnector(KVConnectorBase):
                 "[rank%d]: Failed to receive all KVs and hidden "
                 "states, redo model forwarding.", torch.distributed.get_rank())
             hidden_or_intermediate_states = None
+            print("失败",'-=-='*10)
 
         else:
             logger.debug(
@@ -299,8 +342,9 @@ class SimpleConnector(KVConnectorBase):
                 "states, skip model forwarding.", torch.distributed.get_rank())
             hidden_or_intermediate_states = torch.cat(
                 hidden_or_intermediate_states_for_one_req, dim=0)
+            # print('成功','1212'*29)
 
-        return hidden_or_intermediate_states, bypass_model_exec, model_input
+        return (hidden_or_intermediate_states, bypass_model_exec, model_input)
 
     def close(self):
         self.producer_data_pipe.close()
@@ -308,7 +352,195 @@ class SimpleConnector(KVConnectorBase):
         if self.config.kv_connector == "PyNcclConnector":
             self.producer_signal_pipe.close()
             self.consumer_signal_pipe.close()
+        elif self.config.kv_connector == "LayerConnector":
+            self.producer_signal_pipe.close()
+            self.consumer_signal_pipe.close()
         elif self.config.kv_connector == "MooncakeConnector":
             # MooncakePipe reuses data_pipe for signal_pipe, so we only have to
             # close the data_pipe.
             pass
+
+
+    async def async_select(self, input_tokens: Optional[torch.Tensor],
+               roi: Optional[torch.Tensor]) -> List[Optional[torch.Tensor]]:
+
+        assert self.consumer_buffer is not None, "Please initialize the "\
+            "consumer buffer before calling select."
+        return await self.consumer_buffer.async_drop_select(input_tokens, roi)
+
+    async def async_insert(self, input_tokens: torch.Tensor, roi: torch.Tensor,
+               key: torch.Tensor, value: torch.Tensor,
+               hidden: torch.Tensor) -> None:
+
+        assert self.producer_buffer is not None, "Please initialize the "\
+            "producer buffer before calling insert."
+
+        await self.producer_buffer.async_insert(input_tokens, roi, key, value, hidden)
+
+
+    
+
+    async def async_send_kv_caches_and_hidden_states(
+        self,
+        model_executable: torch.nn.Module,
+        model_input: "ModelInputForGPUWithSamplingMetadata",
+        kv_caches: List[torch.Tensor],
+        hidden_or_intermediate_states: Union[torch.Tensor,
+                                             IntermediateTensors],
+    ) -> None:
+
+        input_tokens_tensor = model_input.input_tokens
+        seq_lens = model_input.attn_metadata.seq_lens
+        slot_mapping_flat = model_input.attn_metadata.slot_mapping.flatten()
+        start_layer = model_executable.model.start_layer
+        end_layer = model_executable.model.end_layer
+
+        model_config = model_executable.model.config
+        num_heads = int(model_config.num_key_value_heads / self.tp_size)
+        hidden_size = model_config.hidden_size
+        num_attention_heads = model_config.num_attention_heads
+        head_size = int(hidden_size / num_attention_heads)
+
+        # query_lens contains new KV caches that are added to vLLM.
+        # so we will send them to decode instance
+        # FIXME(Kuntai): This assume that all requests are prefill.
+        for idx, slen in enumerate(seq_lens):
+            start_pos = sum(seq_lens[:idx])
+            end_pos = start_pos + slen
+            current_tokens = input_tokens_tensor[start_pos:end_pos]
+
+            keys, values = [], []
+
+            for layer_id in range(start_layer, end_layer):
+                kv_cache = kv_caches[layer_id - start_layer]
+
+                key_cache = kv_cache[0].reshape(-1, num_heads, head_size)
+                value_cache = kv_cache[1].reshape(-1, num_heads, head_size)
+
+                current_slot_mapping = slot_mapping_flat[start_pos:end_pos]
+
+                keys.append(key_cache[current_slot_mapping].unsqueeze(0))
+                values.append(value_cache[current_slot_mapping].unsqueeze(0))
+
+            keys = torch.cat(keys, dim=0)
+            values = torch.cat(values, dim=0)
+
+
+            # send_stream = torch.cuda.Stream()
+            # with torch.cuda.stream(send_stream):
+            await self.async_insert(current_tokens,
+                        torch.ones_like(current_tokens,
+                                        dtype=bool), keys, values,
+                        hidden_or_intermediate_states[start_pos:end_pos])
+
+        logger.debug("[rank%d]: KV send DONE.", torch.distributed.get_rank())
+
+    async def async_recv_kv_caches_and_hidden_states(
+        self, model_executable: torch.nn.Module,
+        model_input: "ModelInputForGPUWithSamplingMetadata",
+        kv_caches: List[torch.Tensor]
+    ) -> Tuple[Union[torch.Tensor, IntermediateTensors], bool,
+               "ModelInputForGPUWithSamplingMetadata"]:
+
+        # When bypass_model_exec is set to False, it means that at least for one
+        # request its corresponding KV cache or hidden state is missing.
+        # In this case we need to do prefilling to recompute missing KV cache
+        # and hidden states.
+        bypass_model_exec = True
+
+        input_tokens_tensor = model_input.input_tokens
+        seq_lens = model_input.attn_metadata.seq_lens
+        slot_mapping = model_input.attn_metadata.slot_mapping.flatten()
+
+        hidden_or_intermediate_states_for_one_req = []
+
+        input_tokens_list = []
+        num_computed_tokens_list = []
+        start_pos_list = []
+
+        # enumerate different requests
+        # FIXME(Kuntai): This impl assumes that all requests are prefill.
+        for idx, slen in enumerate(seq_lens):
+
+            start_pos = sum(seq_lens[:idx])
+            end_pos = start_pos + slen
+            current_tokens = input_tokens_tensor[start_pos:end_pos]
+            num_tokens = slen
+
+            # collecting data for rebuilding the input
+            input_tokens_list.append(current_tokens)
+            start_pos_list.append(start_pos)
+
+            # recv_stream = torch.cuda.Stream()
+            # with torch.cuda.stream(recv_stream):
+            ret = await self.async_select(current_tokens,
+                            torch.ones_like(current_tokens, dtype=bool))
+            if ret[0] is None:
+                # didn't find any match.
+                bypass_model_exec = False
+                num_computed_tokens_list.append(0)
+                continue
+
+            roi: torch.Tensor = ret[1]
+            keys: torch.Tensor = ret[2]
+            values: torch.Tensor = ret[3]
+            hidden: torch.Tensor = ret[4]
+
+            num_computed_tokens = roi.shape[0]
+            num_computed_tokens_list.append(num_computed_tokens)
+
+            # check if both KV cache and the hidden states are received
+            # If not, need to redo the forwarding to compute missing states
+            if not all([(num_computed_tokens == num_tokens), hidden is not None
+                        ]):
+                bypass_model_exec = False
+
+            # update the end position based on how many tokens are cached.
+            end_pos = start_pos + num_computed_tokens
+
+            # put received KV caches into paged memory
+            for i in range(model_executable.model.start_layer,
+                        model_executable.model.end_layer):
+
+                kv_cache = kv_caches[i - model_executable.model.start_layer]
+                layer = model_executable.model.layers[i]
+
+                key_cache, value_cache = kv_cache[0], kv_cache[1]
+                ops.reshape_and_cache_flash(
+                    keys[i - model_executable.model.start_layer].to(
+                        key_cache.device),
+                    values[i - model_executable.model.start_layer].to(
+                        value_cache.device),
+                    key_cache,
+                    value_cache,
+                    slot_mapping[start_pos:end_pos],
+                    layer.self_attn.attn.kv_cache_dtype,
+                    layer.self_attn.attn._k_scale,
+                    layer.self_attn.attn._v_scale,
+                )
+            
+            # print("kvcache：",keys.numel()*2/1024**2 + values.numel()*2/1024**2,"hidden: ",hidden.numel()*2/1024/1024)
+            hidden_or_intermediate_states_for_one_req.append(hidden)
+
+        if not bypass_model_exec:
+            # Some of the KV cache is not retrieved
+            # Here we will fall back to normal model forwarding
+            # But optionally you can adjust model_input so that you only do
+            # prefilling on those tokens that are missing KV caches.
+            logger.debug(
+                "[rank%d]: Failed to receive all KVs and hidden "
+                "states, redo model forwarding.", torch.distributed.get_rank())
+            hidden_or_intermediate_states = None
+            print("失败",'-=-='*10)
+
+        else:
+            logger.debug(
+                "[rank%d]: Successfully received all KVs and hidden "
+                "states, skip model forwarding.", torch.distributed.get_rank())
+            hidden_or_intermediate_states = torch.cat(
+                hidden_or_intermediate_states_for_one_req, dim=0)
+            # print('成功','1212'*29)
+
+        return (hidden_or_intermediate_states, bypass_model_exec, model_input)
+
+    

@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
+from concurrent.futures import thread
 import dataclasses
 import os
+import threading
 import time
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
@@ -268,6 +270,7 @@ class LocalOrDistributedWorkerBase(WorkerBase):
     is_driver_worker: bool
     model_runner: ModelRunnerBase
     observability_config: Optional[ObservabilityConfig] = None
+    prepare_input_lock: threading.Lock = threading.Lock()
 
     @property
     @abstractmethod
@@ -333,15 +336,19 @@ class LocalOrDistributedWorkerBase(WorkerBase):
         self, execute_model_req: ExecuteModelRequest
     ) -> Tuple[BroadcastableModelInput, WorkerInput, Dict[str, torch.Tensor]]:
         """ Get the driver input and broadcast it to other workers.  """
+        # is_transfered = execute_model_req.is_transfered
         assert self.is_driver_worker
-
-        worker_input: WorkerInput = self.prepare_worker_input(
-            execute_model_req=execute_model_req)
-        model_input: ModelRunnerInputBase = (
-            self.model_runner.prepare_model_input(
-                execute_model_req.seq_group_metadata_list,
-                execute_model_req.virtual_engine,
-                execute_model_req.finished_requests_ids))
+        with self.prepare_input_lock:
+            worker_input: WorkerInput = self.prepare_worker_input(
+                execute_model_req=execute_model_req)
+            model_input: ModelRunnerInputBase = (
+                self.model_runner.prepare_model_input(
+                    execute_model_req.seq_group_metadata_list,
+                    execute_model_req.virtual_engine,
+                    execute_model_req.finished_requests_ids))
+            
+            # model_input.is_transfered = execute_model_req.is_transfered()
+            # model_input.input_id = execute_model_req.get_input_id()
 
         kwargs = extract_previous_hidden_states(execute_model_req)
 
@@ -383,6 +390,69 @@ class LocalOrDistributedWorkerBase(WorkerBase):
     def get_model(self) -> nn.Module:
         return self.model_runner.get_model()
 
+
+    def execute_model_transfered(
+        self,
+        execute_model_req: Optional[ExecuteModelRequest] = None,
+    ) -> Optional[List[SamplerOutput]]:
+        """Executes at least one model step on the given sequences, unless no
+        sequences are provided."""
+        start_time = time.perf_counter()
+
+        inputs = self.prepare_input(execute_model_req)
+        if inputs is None:
+            return None
+
+        model_input, worker_input, kwargs = inputs
+        num_steps = worker_input.num_steps
+
+        self.execute_worker(worker_input)
+
+        # If there is no input, we don't need to execute the model.
+        if worker_input.num_seq_groups == 0:
+            return []
+
+        intermediate_tensors = None
+        orig_model_execute_time = 0.0
+        if not get_pp_group().is_first_rank:
+            intermediate_tensors = IntermediateTensors(
+                get_pp_group().recv_tensor_dict(
+                    all_gather_group=get_tp_group()))
+            if (self.observability_config is not None
+                    and self.observability_config.collect_model_execute_time):
+                orig_model_execute_time = intermediate_tensors.tensors.get(
+                    "model_execute_time", torch.tensor(0)).item()
+
+        output = self.model_runner.execute_model_transfered(
+            model_input=model_input,
+            kv_caches=self.kv_cache[worker_input.virtual_engine]
+            if self.kv_cache is not None else None,
+            intermediate_tensors=intermediate_tensors,
+            num_steps=num_steps,
+            **kwargs,
+        )
+
+        model_execute_time = time.perf_counter() - start_time
+        if not get_pp_group().is_last_rank:
+            # output is IntermediateTensors
+            assert isinstance(output, IntermediateTensors)
+            if (self.observability_config is not None
+                    and self.observability_config.collect_model_execute_time):
+                output.tensors["model_execute_time"] = torch.tensor(
+                    model_execute_time + orig_model_execute_time)
+            get_pp_group().send_tensor_dict(output.tensors,
+                                            all_gather_group=get_tp_group())
+            return [None]
+        if (self.observability_config is not None
+                and self.observability_config.collect_model_execute_time
+                and output is not None):
+            for o in output:
+                o.model_execute_time = (orig_model_execute_time +
+                                        model_execute_time)
+
+        # output is List[SamplerOutput]
+        return output
+
     def execute_model(
         self,
         execute_model_req: Optional[ExecuteModelRequest] = None,
@@ -421,6 +491,7 @@ class LocalOrDistributedWorkerBase(WorkerBase):
             if self.kv_cache is not None else None,
             intermediate_tensors=intermediate_tensors,
             num_steps=num_steps,
+            transfered=execute_model_req.transfered,
             **kwargs,
         )
 
@@ -566,6 +637,20 @@ class WorkerWrapperBase:
             assert self.worker is not None
 
     def execute_method(self, method: Union[str, bytes], *args, **kwargs):
+        try:
+            target = self if self.worker is None else self.worker
+            return run_method(target, method, args, kwargs)
+        except Exception as e:
+            # if the driver worker also execute methods,
+            # exceptions in the rest worker may cause deadlock in rpc like ray
+            # see https://github.com/vllm-project/vllm/issues/3455
+            # print the error and inform the user to solve the error
+            msg = (f"Error executing method {method!r}. "
+                   "This might cause deadlock in distributed execution.")
+            logger.exception(msg)
+            raise e
+        
+    def execute_method_transfered(self, method: Union[str, bytes], *args, **kwargs):
         try:
             target = self if self.worker is None else self.worker
             return run_method(target, method, args, kwargs)

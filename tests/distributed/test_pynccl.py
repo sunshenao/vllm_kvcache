@@ -219,11 +219,12 @@ def test_pynccl_reduce_scatter():
 def test_pynccl_with_cudagraph():
     distributed_run(worker_fn_with_cudagraph, 2)
 
-
+import time
 @worker_fn_wrapper
 def send_recv_worker_fn():
     pynccl_comm = PyNcclCommunicator(get_world_group().cpu_group,
                                      device=get_world_group().device)
+    a = time.time()
     if pynccl_comm.rank == 0:
         tensor = torch.ones(16, 1024, 1024,
                             dtype=torch.float32).cuda(pynccl_comm.rank)
@@ -237,6 +238,7 @@ def send_recv_worker_fn():
     else:
         pynccl_comm.recv(tensor,
                          src=(pynccl_comm.rank - 1) % pynccl_comm.world_size)
+    print('耗时：',(time.time() - a)*1000,16*1024*1024*4/1024**2)
     torch.cuda.synchronize()
     assert torch.all(tensor == 1).cpu().item()
 
@@ -330,3 +332,7 @@ def test_ncclGetUniqueId():
     # 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     # as long as the function doesn't raise an exception, we're good
     assert unique_id is not None
+
+
+if __name__ == "__main__":
+    test_pynccl_send_recv()

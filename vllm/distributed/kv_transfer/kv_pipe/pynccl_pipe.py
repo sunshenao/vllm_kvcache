@@ -12,6 +12,7 @@
     - Supports distributed process groups with configurable parameters
 """
 
+import functools
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -90,6 +91,11 @@ class PyNcclPipe(KVPipeBase):
             # use PyNCCL for send / recv
             comm = PyNcclCommunicator(group, device=self.local_rank)
             comm.disabled = False
+            # send_stream = torch.cuda.Stream()
+            # recv_stream = torch.cuda.Stream()
+            # send = functools.partial(comm.send,stream=send_stream)
+            # recv = functools.partial(comm.recv,stream=recv_stream)
+
             send, recv = comm.send, comm.recv  # type: ignore
         else:
             # This send / recv implementation here is NOT intended to transfer

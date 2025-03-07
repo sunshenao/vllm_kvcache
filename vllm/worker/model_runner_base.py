@@ -138,6 +138,8 @@ class ModelRunnerInputBase(BroadcastableModelInput):
     ModelRunnerInputBase subclass, add their required fields, and specify how to
     serialize/deserialize a ModelInput for broadcast between workers.
     """
+    input_id: str = None
+    is_transfered: Optional[bool] = False
     pass
 
 
@@ -225,6 +227,7 @@ class ModelRunnerBase(ABC, Generic[T]):
         kv_caches: Optional[List[torch.Tensor]],
         intermediate_tensors: Optional[IntermediateTensors] = None,
         num_steps: int = 1,
+        transfered: bool = False,
         **kwargs,
     ) -> Optional[List[SamplerOutput]]:
         """

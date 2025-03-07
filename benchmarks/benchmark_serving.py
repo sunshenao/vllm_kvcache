@@ -183,7 +183,7 @@ def sample_sonnet_requests(
         len(token_ids) for token_ids in poem_token_ids) / len(poem_token_ids)
 
     # Base prefix for all requests.
-    base_prompt = "Pick as many lines as you can from these poem lines:\n"
+    base_prompt = "Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:\n"
     base_message = [{
         "role": "user",
         "content": base_prompt,
@@ -651,9 +651,12 @@ async def benchmark(
 
     benchmark_start_time = time.perf_counter()
     tasks: List[asyncio.Task] = []
+
+    f = open('./temp.txt','w',encoding="utf-8")
     async for request in get_request(input_requests, request_rate, burstiness):
         prompt, prompt_len, output_len, mm_content = request
         req_model_id, req_model_name = model_id, model_name
+        f.write(prompt+'分开标志')
         if lora_modules:
             req_lora_module = next(lora_modules)
             req_model_id, req_model_name = req_lora_module, req_lora_module
@@ -672,6 +675,7 @@ async def benchmark(
             asyncio.create_task(
                 limited_request_func(request_func_input=request_func_input,
                                      pbar=pbar)))
+    f.close()
     outputs: List[RequestFuncOutput] = await asyncio.gather(*tasks)
 
     if profile:

@@ -7,10 +7,12 @@ from array import array
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
+import threading
 from typing import Any, Callable, DefaultDict, Dict, List, Mapping, Optional
 from typing import Sequence as GenericSequence
 from typing import Set, Tuple, Union
 
+from flask import request
 import msgspec
 import torch
 
@@ -66,6 +68,7 @@ class SequenceStatus(enum.IntEnum):
     FINISHED_LENGTH_CAPPED = 4
     FINISHED_ABORTED = 5
     FINISHED_IGNORED = 6
+    TRANSERED = 1
 
     @staticmethod
     def is_finished(status: "SequenceStatus") -> bool:
@@ -680,6 +683,8 @@ class SequenceGroup:
         self.priority = priority
 
         self.cached_request_output = None
+
+        self.is_decode = False
 
     @property
     def prompt(self) -> Optional[str]:
@@ -1310,6 +1315,21 @@ class ExecuteModelRequest(
     last_sampled_token_ids: Optional[torch.Tensor] = None
     # Async callback
     async_callback: Optional[Callable] = None
+    execute_lock: Optional[threading.Lock] = None
+
+    input_id: str = None
+    transfered: Optional[bool] = False
+    
+    
+    def is_transfered(self)-> bool:
+        return self.transfered
+    
+    @property
+    def get_input_id(self)-> bool:
+        self.input_id = ""
+        for seq_group in self.seq_group_metadata_list:
+            self.input_id = seq_group.request_id[:5]
+        return self.input_id
 
     @property
     def is_first_multi_step(self) -> bool:

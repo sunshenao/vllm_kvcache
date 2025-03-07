@@ -1,11 +1,22 @@
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import process
 import pickle
+from queue import Queue
+import queue
+import threading
+# from threading import Queue
 import signal
 from contextlib import contextmanager
+import threading
+import time
+from tkinter import NO
 from typing import Iterator, List, Optional, Union
 
 import cloudpickle
+from vllm.engine.async_llm_engine import _AsyncLLMEngine
 import zmq
 
 from vllm import AsyncEngineArgs, SamplingParams
@@ -32,6 +43,7 @@ logger = init_logger(__name__)
 POLLING_TIMEOUT_MS = 10000
 HEALTHY_RESPONSE = (pickle.dumps(VLLM_RPC_SUCCESS_STR), )
 
+lock = threading.Lock()
 
 class MQLLMEngine:
     """A multiprocessing wrapper for :class:`LLMEngine`.
@@ -55,7 +67,7 @@ class MQLLMEngine:
 
     Args:
         ipc_path: Base path for zeromq interprocess messaging
-        use_async_sockets: Whether to make send/recv async with GPU
+        use_async_sockets: Whether to make send/recv with GPU
         log_requests: Whether to log the requests.
         *args: Arguments for :class:`LLMEngine`.
         **kwargs: Arguments for :class:`LLMEngine`.
@@ -67,14 +79,18 @@ class MQLLMEngine:
                  *args,
                  log_requests: bool = True,
                  **kwargs) -> None:
+        global lock
         # For MQLLMEngine, we can use cached outputs, since each new request
         # output is immediately pickled and send over the socket, which frees
         # the python object to be reused again.
         kwargs['use_cached_outputs'] = True
-
-        self.engine = LLMEngine(*args, **kwargs)
+        self.condition = threading.Condition() 
+        self.decode = threading.Condition() 
+        self.transfer_queue = queue.Queue()
+        # self.lock = threading.Lock()
+        self.engine = _AsyncLLMEngine(*args, **kwargs,transfer_queue=self.transfer_queue,transfered_con=self.condition)
         self.log_requests = log_requests
-
+        self.kv_config = self.engine.vllm_config.kv_transfer_config
         self.use_async_sockets = use_async_sockets
         if self.use_async_sockets:
             self.engine.process_request_outputs_callback = \
@@ -99,6 +115,68 @@ class MQLLMEngine:
 
         # Error state.
         self._errored_with: Optional[BaseException] = None
+
+        self.transfer_thread = None
+        # 数据传输线程
+        if self.kv_config and self.kv_config.is_kv_consumer:
+            self.transfer_thread = threading.Thread(
+                        target=self.transfer_data,args=(self.transfer_queue,))
+            self.transfer_thread.start()
+
+
+
+    def transfer_data(self, transfer_queue=None):
+        while True:
+            with self.condition:
+                # 等待直到至少有一个调度器有等待的数据
+                if not any(scheduler.have_seq_prefill() != 0 for scheduler in self.engine.scheduler):
+                    self.condition.wait()  # 让出处理资源，等待通知
+                self.engine.step(True, transfer_queue)
+
+    def run_engine_loop(self):
+        """Core busy loop of the LLMEngine."""
+        thread = threading.Thread(target=self.run_step)
+        thread.start()
+
+        thread.join()
+        if self.transfer_thread:
+            self.transfer_thread.join()
+        # self.run_step()
+        
+    def run_step(self):
+        while True:
+            if not self.engine.has_unfinished_requests():
+                # Poll until there is work to do.
+                while self.input_socket.poll(timeout=POLLING_TIMEOUT_MS) == 0:
+                    # When there's no work, check on engine health and send
+                    # health status back to client
+                    self._health_check()
+                    self.engine.do_log_stats()
+                    logger.debug("Waiting for new requests in engine loop.")
+
+            # Handle any input from the client.
+            self.handle_new_input()
+        
+            if self.kv_config and self.kv_config.is_kv_consumer:
+                # with self.decode:
+                #     while not any(scheduler.have_seq_decode() != 0 for scheduler in self.engine.scheduler):
+                #         self.decode.wait()
+                request_outputs = self.engine_step(self.transfer_queue)
+               
+            else:
+                request_outputs = self.engine_step()
+
+            if request_outputs is None:
+                continue
+
+            # Send request outputs (if async, done in engine_step callback).
+            if not self.use_async_sockets:
+                self._send_outputs(request_outputs)
+    
+    def notify_condition(self):
+        pass
+        with self.condition:
+            self.condition.notify()
 
     @property
     def dead_error(self) -> BaseException:
@@ -180,33 +258,11 @@ class MQLLMEngine:
             socket.send_multipart((identity, pickle.dumps(response)),
                                   copy=False)
 
-    def run_engine_loop(self):
-        """Core busy loop of the LLMEngine."""
 
-        while True:
-            if not self.engine.has_unfinished_requests():
-                # Poll until there is work to do.
-                while self.input_socket.poll(timeout=POLLING_TIMEOUT_MS) == 0:
-                    # When there's no work, check on engine health and send
-                    # health status back to client
-                    self._health_check()
-                    self.engine.do_log_stats()
-                    logger.debug("Waiting for new requests in engine loop.")
-
-            # Handle any input from the client.
-            self.handle_new_input()
-
-            # Engine step.
-            request_outputs = self.engine_step()
-
-            # Send request outputs (if async, done in engine_step callback).
-            if not self.use_async_sockets:
-                self._send_outputs(request_outputs)
-
-    def engine_step(self) -> List[RequestOutput]:
+    def engine_step(self,transfer_queue=None) -> List[RequestOutput]:
         """Engine step wrapper with error handling."""
         try:
-            return self.engine.step()
+            return self.engine.step(transfer_queue=transfer_queue)
         except SystemExit:
             raise
         except BaseException as e:
@@ -270,6 +326,7 @@ class MQLLMEngine:
                 trace_headers=request.trace_headers,
                 prompt_adapter_request=request.prompt_adapter_request,
                 priority=request.priority)
+            self.notify_condition()
 
             if self.log_requests:
                 logger.info("Added request %s.", request.request_id)
@@ -351,7 +408,7 @@ class MQLLMEngine:
 
     def _async_socket_engine_callback(self,
                                       request_outputs: REQUEST_OUTPUTS_T):
-        """Callback used by engine to make socket handling async with GPU."""
+        """Callback used by engine to make socket handling with GPU."""
         self._send_outputs(request_outputs)
         self.handle_new_input()
 

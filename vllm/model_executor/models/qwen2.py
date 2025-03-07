@@ -25,6 +25,8 @@
 """Inference-only Qwen2 model compatible with HuggingFace weights."""
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
+from click import Option
+from sympy import false, true
 import torch
 from torch import nn
 from transformers import Qwen2Config
@@ -332,7 +334,16 @@ class Qwen2Model(nn.Module):
         attn_metadata: AttentionMetadata,
         intermediate_tensors: Optional[IntermediateTensors] = None,
         inputs_embeds: Optional[torch.Tensor] = None,
+        config: Optional[VllmConfig] = None,
     ) -> Union[torch.Tensor, IntermediateTensors]:
+
+        # if self.config.kv_transfer_config is None:
+        #     self.recv = false
+        # elif not kv_caches[0].numel() == 0:
+        #     self.recv = self.config.kv_transfer_config.is_kv_consumer and self.config.kv_transfer_config.layer_transfer and attn_metadata.prefill_metadata is not None
+        # else:
+        #     self.recv = false
+
         if get_pp_group().is_first_rank:
             if inputs_embeds is not None:
                 hidden_states = inputs_embeds
@@ -343,7 +354,40 @@ class Qwen2Model(nn.Module):
             assert intermediate_tensors is not None
             hidden_states = intermediate_tensors["hidden_states"]
             residual = intermediate_tensors["residual"]
+        
+        # decode_complete = torch.cuda.Stream()
+        # decode_recv = torch.cuda.Stream()
+        # prefill_complete = torch.cuda.Stream()
+        # prefill_send = torch.cuda.Stream()
+
         for i in range(self.start_layer, self.end_layer):
+            # if self.flag:
+            #     with torch.cuda.stream(decode_recv):
+            #         # decode接收数据，
+            #         hidden_or_intermediate_states, bypass_model_exec, model_input = \
+            #         get_kv_transfer_group().recv_kv_caches_and_hidden_states(
+            #             # model is used to know which layer the current worker
+            #             # is working on, so that we can receive KV for only those
+            #             # layers.
+            #             model_executable,
+            #             model_input,
+            #             kv_caches=kv_caches
+            #         )
+            #     recv_event = torch.cuda.Event()
+            #     recv_event.record(decode_recv)
+            #     with torch.cuda.stream(decode_complete):
+            #         decode_complete.wait_event(recv_event)
+
+            #         layer = self.layers[i]
+            #         hidden_states, residual = layer(
+            #             positions,
+            #             hidden_states,
+            #             kv_caches[i - self.start_layer],
+            #             attn_metadata,
+            #             residual,
+            #         )
+
+            # else:
             layer = self.layers[i]
             hidden_states, residual = layer(
                 positions,
@@ -482,10 +526,11 @@ class Qwen2ForCausalLM(nn.Module, SupportsLoRA, SupportsPP):
         attn_metadata: AttentionMetadata,
         intermediate_tensors: Optional[IntermediateTensors] = None,
         inputs_embeds: Optional[torch.Tensor] = None,
+        config: Optional[VllmConfig] = None,
     ) -> Union[torch.Tensor, IntermediateTensors]:
         hidden_states = self.model(input_ids, positions, kv_caches,
                                    attn_metadata, intermediate_tensors,
-                                   inputs_embeds)
+                                   inputs_embeds,config)
         return hidden_states
 
     def compute_logits(

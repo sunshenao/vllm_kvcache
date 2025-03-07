@@ -3,6 +3,8 @@
 import enum
 import os
 import random
+from threading import Thread
+import threading
 import time
 from collections import deque
 from dataclasses import dataclass, field
@@ -10,7 +12,8 @@ from typing import Callable, Deque, Dict, Iterable, List, Optional
 from typing import Sequence as GenericSequence
 from typing import Set, Tuple, Union
 
-from vllm.config import CacheConfig, LoRAConfig, SchedulerConfig
+from flask import request
+from vllm.config import CacheConfig, LoRAConfig, SchedulerConfig, VllmConfig,KVTransferConfig
 from vllm.core.interfaces import AllocStatus, BlockSpaceManager
 from vllm.logger import init_logger
 from vllm.lora.request import LoRARequest
@@ -330,6 +333,9 @@ class Scheduler:
         lora_config: Optional[LoRAConfig],
         pipeline_parallel_size: int = 1,
         output_proc_callback: Optional[Callable] = None,
+        kv_config: Optional[KVTransferConfig] = None,
+        # lock: Optional[threading.Lock] = None,
+        transfered_con=None,
     ) -> None:
         self.scheduler_config = scheduler_config
         self.cache_config = cache_config
@@ -337,6 +343,7 @@ class Scheduler:
         # simple and NOT fair. It can lead to starvation of some
         # LoRAs. This should be improved in the future.
         self.lora_config = lora_config
+        self.kv_config = kv_config
 
         version = "selfattn"
         if (self.scheduler_config.runner_type == "pooling"
@@ -371,6 +378,7 @@ class Scheduler:
         # Sequence groups in the SWAPPED state.
         # Contain decode requests that are swapped out.
         self.swapped: Deque[SequenceGroup] = deque()
+        self.transfered: Deque[SequenceGroup] = deque()
         # Sequence groups finished requests ids since last step iteration.
         # It lets the model know that any state associated with these requests
         # can and must be released after the current step.
@@ -434,6 +442,20 @@ class Scheduler:
         """The number of new tokens."""
         return 1
 
+    def have_seq_decode(self):
+        run_seq = len(self.running) + len(self.swapped)
+        for seq in self.transfered:
+            if seq.is_decode:
+                run_seq += 1
+        return run_seq
+
+    def have_seq_prefill(self):
+        run_seq = len(self.waiting)
+        for seq in self.transfered:
+            if not seq.is_decode:
+                run_seq += 1
+        return run_seq
+    
     def add_seq_group(self, seq_group: SequenceGroup) -> None:
         # Add sequence groups to the waiting queue.
         self.waiting.append(seq_group)
@@ -523,6 +545,7 @@ class Scheduler:
         budget: SchedulingBudget,
         curr_loras: Optional[Set[int]],
         enable_chunking: bool = False,
+        transfer_queue = None
     ) -> SchedulerRunningOutputs:
         """Schedule sequence groups that are running.
 
@@ -589,6 +612,11 @@ class Scheduler:
 
             running_queue.popleft()
 
+            # request_id = seq_group.request_id
+            # if not seq_group.is_decode:
+            #     swapped_out.append(seq_group)
+            #     continue
+
             # With async postprocessor, an extra decode run is done
             # to process the final tokens. The check below avoids this extra
             # decode run when the model max len is reached, in order to avoid
@@ -628,9 +656,9 @@ class Scheduler:
                 # we need to ensure it has no pending async postprocessor
                 do_preempt = True
                 if self.use_async_output_proc:
-                    assert self.output_proc_callback is not None
-                    self.output_proc_callback(
-                        request_id=victim_seq_group.request_id)
+                    # assert self.output_proc_callback is not None
+                    # self.output_proc_callback(
+                    #     request_id=victim_seq_group.request_id)
 
                     # It may be that the async pending "victim_seq_group"
                     # becomes finished, in which case we simply free it.
@@ -651,7 +679,7 @@ class Scheduler:
                     break
             else:
                 self._append_slots(seq_group, blocks_to_copy, enable_chunking)
-                is_prefill = seq_group.is_prefill()
+                is_prefill = seq_group.is_prefill() # if not self.is_decode(self.kv_config) else False
 
                 scheduled_seq_group: ScheduledSequenceGroup = \
                     self._scheduled_seq_group_cache[self.cache_id].get_object()
@@ -829,6 +857,7 @@ class Scheduler:
     def _schedule_priority_preemption(
         self,
         budget: SchedulingBudget,
+        transfer_data: bool = False
     ) -> int:
         """Sorts waiting and running queue. Also, force preempt requests
         from the running queue if their priority is lower.
@@ -841,8 +870,10 @@ class Scheduler:
         """
 
         waiting_queue = self.waiting
-
-        running_queue = deque(sorted(self.running, key=self._get_priority))
+        if transfer_data:
+            running_queue = deque(sorted(self.transfered, key=self._get_priority))
+        else:
+            running_queue = deque(sorted(self.running, key=self._get_priority))
 
         blocks_to_swap_out: List[Tuple[int, int]] = []
         force_preemption_count = 0
@@ -896,6 +927,7 @@ class Scheduler:
         budget: SchedulingBudget,
         curr_loras: Optional[Set[int]],
         enable_chunking: bool = False,
+        transfer_data: bool = False,
     ) -> SchedulerPrefillOutputs:
         """Schedule sequence groups that are in prefill stage.
 
@@ -1046,8 +1078,19 @@ class Scheduler:
             ignored_seq_groups=ignored_seq_groups,
             num_lookahead_slots=self._get_num_lookahead_slots(
                 is_prefill=True, enable_chunking=enable_chunking))
+    
 
-    def _schedule_default(self) -> SchedulerOutputs:
+    def is_prefill(self):
+        if self.kv_config is None:
+            return True
+        return self.kv_config.is_kv_producer
+    
+    def is_decode(self):
+        if self.kv_config is None:
+            return True
+        return self.kv_config.is_kv_consumer
+    
+    def _schedule_default(self,transfer_data=False,transfer_queue=None,lock_list=None) -> SchedulerOutputs:
         """Schedule queued requests.
         
         The current policy is designed to optimize the throughput. First,
@@ -1076,8 +1119,8 @@ class Scheduler:
         # If any requests are swapped, prioritized swapped requests.
         if not self.swapped:
             prefills = self._schedule_prefills(budget,
-                                               curr_loras,
-                                               enable_chunking=False)
+                                            curr_loras,
+                                            enable_chunking=False)
 
         if len(prefills.seq_groups
                ) == 0 and self.scheduler_config.policy == "priority":
@@ -1090,7 +1133,9 @@ class Scheduler:
             running_scheduled = self._schedule_running(budget,
                                                        curr_loras,
                                                        enable_chunking=False)
-
+            # print(running_scheduled,'-='*12)
+            # time.sleep(10)
+            # print(len(self.transfered),len(self.running),running_scheduled,sep='\n')
             # If any sequence group is preempted, do not swap in any sequence
             # group. because it means there's no slot for new running requests.
             if len(running_scheduled.preempted) + len(
@@ -1247,12 +1292,276 @@ class Scheduler:
                        len(running_scheduled.swapped_out)),
         )
 
-    def _schedule(self) -> SchedulerOutputs:
+    def _schedule(self,transfer_data=False,transfer_queue=None,lock_list=None) -> SchedulerOutputs:
         """Schedule queued requests."""
         if self.scheduler_config.chunked_prefill_enabled:
             return self._schedule_chunked_prefill()
+        # elif self.is_decode(): # 只有decode才需要进行新的调度
+        #     return self._shedule_disagg(transfer_data,transfer_queue)
+        
+        # elif self.is_decode(): # 只有decode才需要进行新的调度
+        #     return self._shedule_disagg_test(transfer_data,transfer_queue)
         else:
-            return self._schedule_default()
+            return self._schedule_default(transfer_data,transfer_queue,lock_list)
+
+    def _shedule_disagg_test(self,transfer_data=False,transfer_queue=None):
+        is_prefill = transfer_data # 判断是否为prefill阶段
+        # print('进入decoded调度')
+        budget = SchedulingBudget(
+            token_budget=self.scheduler_config.max_num_batched_tokens,
+            max_num_seqs=self.scheduler_config.max_num_seqs,
+        )
+        # real_queue = self.transfered + self.running
+        
+
+        # 计算负载是否足够 
+        for seq_group in (self.running + self.transfered):
+            budget.add_num_seqs(seq_group.request_id,
+                                seq_group.get_max_num_running_seqs())
+        curr_loras = set(
+            seq_group.lora_int_id for seq_group in self.running
+            if seq_group.lora_int_id > 0) if self.lora_enabled else None
+
+        prefills = SchedulerPrefillOutputs.create_empty()
+        running_scheduled = SchedulerRunningOutputs.create_empty()
+        swapped_in = SchedulerSwappedInOutputs.create_empty()
+
+        if not self.swapped and is_prefill: # 只有prefill才可以进行调度
+            # 将这里调度的数据放入到transfer队列中
+            prefills = self._schedule_prefills(budget,
+                                               curr_loras,
+                                               enable_chunking=False,
+                                               transfer_data=transfer_data)
+
+
+        if len(prefills.seq_groups
+               ) == 0 and self.scheduler_config.policy == "priority":
+            self._schedule_priority_preemption(budget)
+
+        # Don't schedule decodes if prefills are scheduled.
+        # NOTE: If `_schedule_prefills` doesn't enable chunking, self.running
+        # only contains decode requests, not chunked prefills.
+        if not is_prefill:
+            # 从transfer队列中获取数据
+            # print(self.transfered,'======================')
+            #while len(self.transfered) != 0:
+            
+            # self._schedule_transfer()
+            # # print(len(self.running),len(self.transfered))
+            # while len(self.running) == 0 and len(self.transfered) != 0:
+            #     self._schedule_transfer()
+            # print(len(self.running),'---------------------')
+            running_scheduled = self._schedule_running(budget,
+                                                       curr_loras,
+                                                       enable_chunking=False)
+            # if running_scheduled.decode_seq_groups:
+            #     print(running_scheduled.decode_seq_groups)
+            # If any sequence group is preempted, do not swap in any sequence
+            # group. because it means there's no slot for new running requests.
+
+            if len(running_scheduled.preempted) + len(
+                    running_scheduled.swapped_out) == 0:
+                swapped_in = self._schedule_swapped(budget, curr_loras)
+
+        assert (budget.num_batched_tokens
+                <= self.scheduler_config.max_num_batched_tokens)
+        assert budget.num_curr_seqs <= self.scheduler_config.max_num_seqs
+
+        # Update waiting requests.
+        self.waiting.extendleft(running_scheduled.preempted)
+        
+        # Update new running requests.
+        if len(prefills.seq_groups) > 0:
+            # 首先将数据调度到传输队列
+            self.running.extend([s.seq_group for s in prefills.seq_groups])
+            # print(len(self.running),transfer_data)
+            # print(real_queue,'+='*10)
+            # self.running.extend([s.seq_group for s in prefills.seq_groups])
+
+        # decode的执行队列
+        self.running.extend(running_scheduled.decode_seq_groups_list) 
+
+        # prefill会重新计算，所以swapped_in属于decode部分
+        if len(swapped_in.decode_seq_groups) > 0: 
+            self.running.extend(
+                [s.seq_group for s in swapped_in.decode_seq_groups])
+
+        # Update swapped requests.
+        self.swapped.extend(running_scheduled.swapped_out)
+        preempted = (len(running_scheduled.preempted) +
+                     len(running_scheduled.swapped_out))
+
+        # There should be no prefill from running queue because this policy
+        # doesn't allow chunked prefills.
+        assert len(running_scheduled.prefill_seq_groups) == 0
+        assert len(swapped_in.prefill_seq_groups) == 0
+
+        # Merge lists
+        num_prefill_groups = len(prefills.seq_groups)
+        if num_prefill_groups > 0:
+            scheduled_seq_groups = prefills.seq_groups
+            scheduled_seq_groups.extend(running_scheduled.decode_seq_groups)
+        else:
+            scheduled_seq_groups = running_scheduled.decode_seq_groups
+        scheduled_seq_groups.extend(swapped_in.decode_seq_groups)
+
+        blocks_to_copy = running_scheduled.blocks_to_copy
+        blocks_to_copy.extend(swapped_in.blocks_to_copy)
+
+        ignored_seq_groups = prefills.ignored_seq_groups
+        ignored_seq_groups.extend(swapped_in.infeasible_seq_groups)
+        return SchedulerOutputs(
+            scheduled_seq_groups=scheduled_seq_groups,
+            num_prefill_groups=num_prefill_groups,
+            num_batched_tokens=budget.num_batched_tokens +
+            budget.num_cached_tokens,
+            blocks_to_swap_in=swapped_in.blocks_to_swap_in,
+            blocks_to_swap_out=running_scheduled.blocks_to_swap_out,
+            blocks_to_copy=blocks_to_copy,
+            ignored_seq_groups=ignored_seq_groups,
+            num_lookahead_slots=running_scheduled.num_lookahead_slots,
+            running_queue_size=len(self.running), #if not is_prefill else len(self.waiting),
+            preempted=preempted,
+        )
+
+    def _shedule_disagg(self,transfer_data=False,transfer_queue=None):
+        is_prefill = transfer_data # 判断是否为prefill阶段
+        # print('进入decoded调度')
+        budget = SchedulingBudget(
+            token_budget=self.scheduler_config.max_num_batched_tokens,
+            max_num_seqs=self.scheduler_config.max_num_seqs,
+        )
+        if transfer_data:
+            real_queue = self.transfered
+        else:
+            real_queue = self.running
+        # real_queue = self.transfered + self.running
+        
+        # Make sure we include num running seqs before scheduling prefill,
+        # so that we don't schedule beyond max_num_seqs for prefill.
+        for seq_group in (self.transfered + self.running):
+            budget.add_num_seqs(seq_group.request_id,
+                                seq_group.get_max_num_running_seqs())
+        curr_loras = set(
+            seq_group.lora_int_id for seq_group in real_queue
+            if seq_group.lora_int_id > 0) if self.lora_enabled else None
+
+        prefills = SchedulerPrefillOutputs.create_empty()
+        running_scheduled = SchedulerRunningOutputs.create_empty()
+        swapped_in = SchedulerSwappedInOutputs.create_empty()
+
+        if not self.swapped and is_prefill: # 只有prefill才可以进行调度
+            # 将这里调度的数据放入到transfer队列中
+            prefills = self._schedule_prefills(budget,
+                                               curr_loras,
+                                               enable_chunking=False,
+                                               transfer_data=transfer_data)
+            # print(prefills)
+            
+            
+
+        if len(prefills.seq_groups
+               ) == 0 and self.scheduler_config.policy == "priority":
+            self._schedule_priority_preemption(budget)
+
+        # Don't schedule decodes if prefills are scheduled.
+        # NOTE: If `_schedule_prefills` doesn't enable chunking, self.running
+        # only contains decode requests, not chunked prefills.
+        if not is_prefill:
+            # 从transfer队列中获取数据
+            # print(self.transfered,'======================')
+            #while len(self.transfered) != 0:
+            
+            self._schedule_transfer()
+            # print(len(self.running),len(self.transfered))
+            while len(self.running) == 0 and len(self.transfered) != 0:
+                self._schedule_transfer()
+            # print(len(self.running),'---------------------')
+            running_scheduled = self._schedule_running(budget,
+                                                       curr_loras,
+                                                       enable_chunking=False)
+
+            # If any sequence group is preempted, do not swap in any sequence
+            # group. because it means there's no slot for new running requests.
+            if len(running_scheduled.preempted) + len(
+                    running_scheduled.swapped_out) == 0:
+                swapped_in = self._schedule_swapped(budget, curr_loras)
+
+        assert (budget.num_batched_tokens
+                <= self.scheduler_config.max_num_batched_tokens)
+        assert budget.num_curr_seqs <= self.scheduler_config.max_num_seqs
+
+        # Update waiting requests.
+        self.waiting.extendleft(running_scheduled.preempted)
+        
+        # Update new running requests.
+        if len(prefills.seq_groups) > 0:
+            # 首先将数据调度到传输队列
+            real_queue.extend([s.seq_group for s in prefills.seq_groups]) 
+            # print(real_queue,'+='*10)
+            # self.running.extend([s.seq_group for s in prefills.seq_groups])
+
+        # decode的执行队列
+        real_queue.extend(running_scheduled.decode_seq_groups_list) 
+
+        # prefill会重新计算，所以swapped_in属于decode部分
+        if len(swapped_in.decode_seq_groups) > 0: 
+            real_queue.extend(
+                [s.seq_group for s in swapped_in.decode_seq_groups])
+
+        # Update swapped requests.
+        self.swapped.extend(running_scheduled.swapped_out)
+        preempted = (len(running_scheduled.preempted) +
+                     len(running_scheduled.swapped_out))
+
+        # There should be no prefill from running queue because this policy
+        # doesn't allow chunked prefills.
+        assert len(running_scheduled.prefill_seq_groups) == 0
+        assert len(swapped_in.prefill_seq_groups) == 0
+
+        # Merge lists
+        num_prefill_groups = len(prefills.seq_groups)
+        if num_prefill_groups > 0:
+            scheduled_seq_groups = prefills.seq_groups
+            scheduled_seq_groups.extend(running_scheduled.decode_seq_groups)
+        else:
+            scheduled_seq_groups = running_scheduled.decode_seq_groups
+        scheduled_seq_groups.extend(swapped_in.decode_seq_groups)
+
+        blocks_to_copy = running_scheduled.blocks_to_copy
+        blocks_to_copy.extend(swapped_in.blocks_to_copy)
+
+        ignored_seq_groups = prefills.ignored_seq_groups
+        ignored_seq_groups.extend(swapped_in.infeasible_seq_groups)
+
+        return SchedulerOutputs(
+            scheduled_seq_groups=scheduled_seq_groups,
+            num_prefill_groups=num_prefill_groups,
+            num_batched_tokens=budget.num_batched_tokens +
+            budget.num_cached_tokens,
+            blocks_to_swap_in=swapped_in.blocks_to_swap_in,
+            blocks_to_swap_out=running_scheduled.blocks_to_swap_out,
+            blocks_to_copy=blocks_to_copy,
+            ignored_seq_groups=ignored_seq_groups,
+            num_lookahead_slots=running_scheduled.num_lookahead_slots,
+            running_queue_size=len(real_queue), #if not is_prefill else len(self.waiting),
+            preempted=preempted,
+        )
+    
+
+    def _schedule_transfer(self):
+        transfered_queue = self.transfered
+        num = 0
+        length = len(transfered_queue)
+        while transfered_queue and num < length:
+            num += 1
+            seq_groups = transfered_queue[0]
+            is_decode = seq_groups.is_decode
+            if is_decode:
+                self.running.extend([seq_groups])
+                transfered_queue.popleft()
+            else:
+                transfered_queue.rotate(-1)
 
     def _can_append_slots(self, seq_group: SequenceGroup,
                           enable_chunking: bool) -> bool:
@@ -1286,15 +1595,23 @@ class Scheduler:
         return no_single_seq
 
     def schedule(
-            self
+            self,transfer_data=False,transfer_queue=None,lock_list=None
     ) -> Tuple[List[SequenceGroupMetadata], SchedulerOutputs, bool]:
         # Schedule sequence groups.
         # This function call changes the internal states of the scheduler
         # such as self.running, self.swapped, and self.waiting.
         scheduler_start_time = time.perf_counter()
 
-        scheduler_outputs: SchedulerOutputs = self._schedule()
+        scheduler_outputs: SchedulerOutputs = self._schedule(transfer_data,transfer_queue,lock_list)
+        
+
         now = time.time()
+
+        # if transfer_data:
+        #     real_queue = self.transfered
+        # else:
+        #     real_queue = self.running
+        real_queue = self.running
 
         if not self.cache_config.enable_prefix_caching:
             common_computed_block_nums = []
@@ -1428,7 +1745,7 @@ class Scheduler:
         # Add this to scheduler time to all the sequences that are currently
         # running. This will help estimate if the scheduler is a significant
         # component in the e2e latency.
-        for seq_group in self.running:
+        for seq_group in real_queue: # self.running
             if seq_group is not None and seq_group.metrics is not None:
                 if seq_group.metrics.scheduler_time is not None:
                     seq_group.metrics.scheduler_time += scheduler_time
@@ -1577,6 +1894,7 @@ class Scheduler:
         self,
         seq_group: SequenceGroup,
     ) -> None:
+        seq_group.is_decode = False
         seqs = seq_group.get_seqs(status=SequenceStatus.RUNNING)
         assert len(seqs) == 1
         for seq in seqs:

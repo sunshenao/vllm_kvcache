@@ -44,6 +44,10 @@ class StopChecker:
         # skip the stop string/token checks if not
         if seq.get_output_len() < sampling_params.min_tokens:
             return
+        
+        if sampling_params.max_tokens == 1:
+            seq.status = SequenceStatus.FINISHED_STOPPED
+            return
 
         # Check if the sequence has generated the EOS token.
         if ((not sampling_params.ignore_eos)

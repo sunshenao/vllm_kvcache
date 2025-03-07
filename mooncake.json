@@ -1,0 +1,8 @@
+{
+    "prefill_url": "localhost:13003",
+    "decode_url": "localhost:13103",
+    "metadata_server": "localhost:2379",
+    "metadata_backend": "etcd",
+    "protocol": "tcp",
+    "device_name": ""
+  }

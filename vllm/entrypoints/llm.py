@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import itertools
+import time
 import warnings
 from contextlib import contextmanager
 from typing import (Any, Callable, ClassVar, Dict, List, Optional, Sequence,
@@ -1394,7 +1395,10 @@ class LLM:
         total_in_toks = 0
         total_out_toks = 0
         while self.llm_engine.has_unfinished_requests():
+            a = time.time()
+            # step_outputs = self.llm_engine.step()
             step_outputs = self.llm_engine.step()
+            print('耗时为：',time.time() - a )
             for output in step_outputs:
                 if output.finished:
                     outputs.append(output)

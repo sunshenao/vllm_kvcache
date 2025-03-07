@@ -1,9 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
 import dataclasses
 import gc
+import os
 import inspect
 import itertools
+import multiprocessing
+import threading
 import time
 import weakref
 from contextlib import contextmanager
@@ -728,6 +732,7 @@ class ModelInputForGPUBuilder(ModelRunnerInputBuilderBase[ModelInputForGPU]):
     def add_seq_group(self, seq_group_metadata: SequenceGroupMetadata):
         """Add a sequence group to the builder."""
         seq_ids = seq_group_metadata.seq_data.keys()
+        # print(seq_group_metadata)
         n_seqs = len(seq_ids)
         is_prompt = seq_group_metadata.is_prompt
 
@@ -990,7 +995,7 @@ class ModelInputForGPUBuilder(ModelRunnerInputBuilderBase[ModelInputForGPU]):
             request_ids_to_seq_ids=request_ids_to_seq_ids,
             finished_requests_ids=self.finished_requests_ids,
             prompt_adapter_mapping=prompt_adapter_mapping,
-            prompt_adapter_requests=prompt_adapter_requests)
+            prompt_adapter_requests=prompt_adapter_requests,)
 
 
 class GPUModelRunnerBase(ModelRunnerBase[TModelInputForGPU]):
@@ -1593,6 +1598,13 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
     _model_input_cls: Type[ModelInputForGPUWithSamplingMetadata] = (
         ModelInputForGPUWithSamplingMetadata)
     _builder_cls: Type[ModelInputForGPUBuilder] = ModelInputForGPUBuilder
+    num: int = 0
+    send_num: int = 0
+    recv_dict: dict = {}
+    prefill_num:int = 0
+    context = multiprocessing.get_context("spawn")
+
+    transfed_dict = {}
 
     def make_model_input_from_broadcasted_tensor_dict(
         self,
@@ -1643,12 +1655,68 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                                    virtual_engine=virtual_engine)
 
     @torch.inference_mode()
+    def execute_model_transfered(
+        self,
+        model_input: ModelInputForGPUWithSamplingMetadata,
+        kv_caches: List[torch.Tensor],
+        intermediate_tensors: Optional[IntermediateTensors] = None,
+        num_steps: int = 1,
+    ):
+        if num_steps > 1:
+            raise ValueError("num_steps > 1 is not supported in ModelRunner")
+
+        if self.lora_config:
+            assert model_input.lora_requests is not None
+            assert model_input.lora_mapping is not None
+            self.set_active_loras(model_input.lora_requests,
+                                  model_input.lora_mapping)
+
+        if self.prompt_adapter_config:
+            assert model_input.prompt_adapter_requests is not None
+            assert model_input.prompt_adapter_mapping is not None
+            self.set_active_prompt_adapters(
+                model_input.prompt_adapter_requests,
+                model_input.prompt_adapter_mapping)
+
+      
+        model_executable = self.model
+
+        bypass_model_exec = False
+        a = time.time()
+        
+        hidden_or_intermediate_states, bypass_model_exec, model_input = \
+            asyncio.run(get_kv_transfer_group().recv_kv_caches_and_hidden_states(
+                # model is used to know which layer the current worker
+                # is working on, so that we can receive KV for only those
+                # layers.
+                model_executable,
+                model_input,
+                kv_caches=kv_caches,
+            ))
+
+        self.num += model_input.attn_metadata.num_prefills
+        self.send_num += model_input.attn_metadata.num_prefill_tokens
+        print('传输时间为: ',(time.time() -a)*1000,self.num,bypass_model_exec,threading.current_thread().ident)
+        if threading.current_thread() is threading.main_thread():
+            print("运行在主线程")
+        else:
+            print("运行在子线程")
+
+        
+        self.transfed_dict[model_input.input_id] = hidden_or_intermediate_states
+
+        return []
+
+        
+        
+    @torch.inference_mode()
     def execute_model(
         self,
         model_input: ModelInputForGPUWithSamplingMetadata,
         kv_caches: List[torch.Tensor],
         intermediate_tensors: Optional[IntermediateTensors] = None,
         num_steps: int = 1,
+        transfered: bool = False,
     ) -> Optional[Union[List[SamplerOutput], IntermediateTensors]]:
         if num_steps > 1:
             raise ValueError("num_steps > 1 is not supported in ModelRunner")
@@ -1690,16 +1758,36 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
         # we can skip prefilling on tokens that successfully received KV caches
         # NOTE: The receive operation is blocking
         bypass_model_exec = False
+        a = time.time()
         if self.need_recv_kv(model_input, kv_caches):
+        # if model_input.input_id in self.transfed_dict.keys():
+            # bypass_model_exec = True
+            # hidden_or_intermediate_states = self.transfed_dict.pop(model_input.input_id)
+            # self.transfed_dict.
+            # hidden_or_intermediate_states = 
             hidden_or_intermediate_states, bypass_model_exec, model_input = \
-                get_kv_transfer_group().recv_kv_caches_and_hidden_states(
+                asyncio.run(get_kv_transfer_group().async_recv_kv_caches_and_hidden_states(
                     # model is used to know which layer the current worker
                     # is working on, so that we can receive KV for only those
                     # layers.
                     model_executable,
                     model_input,
-                    kv_caches=kv_caches
-                )
+                    # kv_caches=kv_caches
+                    kv_caches=kv_caches,
+                ))
+            # hidden_or_intermediate_states = torch.randn((len(model_input.input_tokens),3584),
+            #                                             device=self.device,
+            #                                             dtype=self.model_config.dtype)
+            # bypass_model_exec = True
+
+            self.num += model_input.attn_metadata.num_prefills
+            self.send_num += model_input.attn_metadata.num_prefill_tokens
+            print('传输时间为: ',(time.time() -a)*1000,self.num,bypass_model_exec,threading.current_thread().ident)
+            if threading.current_thread() is threading.main_thread():
+                print("运行在主线程")
+            else:
+                print("运行在子线程")
+
 
         multi_modal_kwargs = model_input.multi_modal_kwargs or {}
         seqlen_agnostic_kwargs = {
@@ -1721,6 +1809,7 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                     kv_caches=kv_caches,
                     attn_metadata=model_input.attn_metadata,
                     intermediate_tensors=intermediate_tensors,
+                    # config=self.vllm_config,
                     **MultiModalKwargs.as_kwargs(multi_modal_kwargs,
                                                  device=self.device),
                     **seqlen_agnostic_kwargs)
@@ -1732,7 +1821,10 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
         # Sending KV cache in distributed KV cache transfer setting
         # NOTE: the send operation is non-blocking
         if self.need_send_kv(model_input, kv_caches):
-            get_kv_transfer_group().send_kv_caches_and_hidden_states(
+            # prefill_send = torch.cuda.Stream()
+            # with torch.cuda.stream(prefill_send):
+            a = time.time()
+            asyncio.run(get_kv_transfer_group().async_send_kv_caches_and_hidden_states(
                 # model_executable is used to know which layer the current
                 # worker is working on, so that we can send KV for only those
                 # layers.
@@ -1740,7 +1832,10 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                 model_input,
                 kv_caches,
                 hidden_or_intermediate_states,
-            )
+            ))
+            print('发送耗时为： ',(time.time()-a) * 1000)
+        
+        
 
         # Compute the logits in the last pipeline stage.
         if not get_pp_group().is_last_rank:
@@ -1832,7 +1927,7 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
         is_prefill_run = prefill_meta is not None
 
         return self.vllm_config.kv_transfer_config.is_kv_consumer and (
-            not is_profile_run) and is_prefill_run
+            not is_profile_run) and is_prefill_run # and not self.vllm_config.kv_transfer_config.layer_transfer
 
     def need_send_kv(self, model_input, kv_caches) -> bool:
         """Check if we need to send kv-cache to the other worker.
@@ -1857,7 +1952,7 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
         is_prefill_run = prefill_meta is not None
 
         return self.vllm_config.kv_transfer_config.is_kv_producer and (
-            not is_profile_run) and is_prefill_run
+            not is_profile_run) and is_prefill_run #and (not self.vllm_config.kv_transfer_config.is_layerwise_kv_transfer)
 
 
 # NOTE: this is nn.Module so the profiler can properly capture/group

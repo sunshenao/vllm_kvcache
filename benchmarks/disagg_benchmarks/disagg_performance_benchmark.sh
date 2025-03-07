@@ -3,7 +3,7 @@
 # Requirement: 2x GPUs.
 
 
-# Model: meta-llama/Meta-Llama-3.1-8B-Instruct
+# Model: /root/models/Qwen/Qwen2.5-7B-Instruct-GPTQ-Int8
 # Query: 1024 input tokens, 6 output tokens, QPS 2/4/6/8, 100 requests
 # Resource: 2x GPU
 # Approaches:
@@ -13,6 +13,11 @@
 # Decoding instance: force the input tokens be the same across requests to bypass prefilling
 
 set -ex
+
+export HF_ENDPOINT=https://hf-mirror.com
+export PATH="/root/miniconda3/bin:$PATH"
+eval "$(/root/miniconda3/bin/conda shell.bash hook)"
+conda activate latest
 
 kill_gpu_processes() {
   # kill all processes on GPU.
@@ -34,7 +39,7 @@ wait_for_server() {
 
 
 launch_chunked_prefill() {
-  model="meta-llama/Meta-Llama-3.1-8B-Instruct"
+  model="/root/models/Qwen/Qwen2.5-7B-Instruct"
   # disagg prefill
   CUDA_VISIBLE_DEVICES=0 python3 \
     -m vllm.entrypoints.openai.api_server \
@@ -42,42 +47,47 @@ launch_chunked_prefill() {
     --port 8100 \
     --max-model-len 10000 \
     --enable-chunked-prefill \
-    --gpu-memory-utilization 0.6 &
+    --gpu-memory-utilization 0.8 &
   CUDA_VISIBLE_DEVICES=1 python3 \
     -m vllm.entrypoints.openai.api_server \
     --model $model \
     --port 8200 \
     --max-model-len 10000 \
     --enable-chunked-prefill \
-    --gpu-memory-utilization 0.6 &
-  wait_for_server 8100
+    --gpu-memory-utilization 0.8 &
   wait_for_server 8200
+  wait_for_server 8100
   python3 round_robin_proxy.py &
   sleep 1
 }
 
+export MOONCAKE_CONFIG_PATH='/root/code/latest/Mooncake/vllm/mooncake.json'
+# --enable-chunked-prefill \
+
 
 launch_disagg_prefill() {
-  model="meta-llama/Meta-Llama-3.1-8B-Instruct" 
+  model="/root/models/Qwen/Qwen2.5-7B-Instruct" 
   # disagg prefill
-  CUDA_VISIBLE_DEVICES=0 python3 \
-    -m vllm.entrypoints.openai.api_server \
-    --model $model \
-    --port 8100 \
-    --max-model-len 10000 \
-    --gpu-memory-utilization 0.6 \
-    --kv-transfer-config \
-    '{"kv_connector":"PyNcclConnector","kv_role":"kv_producer","kv_rank":0,"kv_parallel_size":2,"kv_buffer_size":5e9}' &
 
   CUDA_VISIBLE_DEVICES=1 python3 \
     -m vllm.entrypoints.openai.api_server \
     --model $model \
+    --port 8100 \
+    --max-model-len 10000 \
+    --gpu-memory-utilization 0.85 \
+    --kv-transfer-config \
+    '{"kv_connector":"LayerConnector","kv_role":"kv_producer","kv_rank":0,"kv_parallel_size":2,"kv_buffer_size":2e9}' &
+# PyNcclConnector1MooncakeConnector11LayerConnector
+
+ CUDA_VISIBLE_DEVICES=2  python3 \
+    -m vllm.entrypoints.openai.api_server \
+    --model $model \
     --port 8200 \
     --max-model-len 10000 \
-    --gpu-memory-utilization 0.6 \
+    --gpu-memory-utilization 0.85 \
     --kv-transfer-config \
-    '{"kv_connector":"PyNcclConnector","kv_role":"kv_consumer","kv_rank":1,"kv_parallel_size":2,"kv_buffer_size":5e9}' &
-
+    '{"kv_connector":"LayerConnector","kv_role":"kv_consumer","kv_rank":1,"kv_parallel_size":2,"kv_buffer_size":2e9}' &
+# --max-model-len 10000 \
   wait_for_server 8100
   wait_for_server 8200
   python3 disagg_prefill_proxy_server.py &
@@ -87,16 +97,16 @@ launch_disagg_prefill() {
 
 benchmark() {
   results_folder="./results"
-  model="meta-llama/Meta-Llama-3.1-8B-Instruct"
-  dataset_name="sonnet"
+  model="/root/models/Qwen/Qwen2.5-7B-Instruct"        # /root/models/Qwen/Qwen2.5-7B-Instruct
+  dataset_name="sonnet" # sonnet random
   dataset_path="../sonnet_4x.txt"
-  num_prompts=100
+  num_prompts=50
   qps=$1
-  prefix_len=50
-  input_len=1024
+  prefix_len=60
+  input_len=$3
   output_len=$2
-  tag=$3
-
+  tag=$4
+# nsys profile --stat=true 
   python3 ../benchmark_serving.py \
           --backend vllm \
           --model $model \
@@ -110,7 +120,9 @@ benchmark() {
           --save-result \
           --result-dir $results_folder \
           --result-filename "$tag"-qps-"$qps".json \
-          --request-rate "$qps"
+          --random-output-len $output_len \
+          --random-input-len $input_len \
+          --request-rate "$qps" \
 
   sleep 2
 }
@@ -139,20 +151,26 @@ main() {
   rm -rf results
   mkdir results
 
-  default_output_len=6
+  default_output_len=10
+
+  default_input_len=256
 
   export VLLM_HOST_IP=$(hostname -I | awk '{print $1}')
 
-  launch_chunked_prefill
-  for qps in 2 4 6 8; do
-  benchmark $qps $default_output_len chunked_prefill
-  done
   kill_gpu_processes
 
   launch_disagg_prefill
-  for qps in 2 4 6 8; do
-  benchmark $qps $default_output_len disagg_prefill
+  for qps in 6; do
+  benchmark $qps $default_output_len $default_input_len disagg_prefill #disagg_prefill async_prefill
   done
+
+  kill_gpu_processes
+
+  launch_chunked_prefill
+  for qps in 6 ; do
+  benchmark $qps $default_output_len $default_input_len chunked_prefill
+  done
+
   kill_gpu_processes
 
   python3 visualize_benchmark_results.py

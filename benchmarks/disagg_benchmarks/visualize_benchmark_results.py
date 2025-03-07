@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,7 +10,9 @@ if __name__ == "__main__":
 
     data = []
     for name in ['disagg_prefill', 'chunked_prefill']:
-        for qps in [2, 4, 6, 8]:
+        for qps in range(1,100):
+            if not os.path.exists(f"results/{name}-qps-{qps}.json"):
+                continue
             with open(f"results/{name}-qps-{qps}.json") as f:
                 x = json.load(f)
                 x['name'] = name
@@ -25,7 +28,7 @@ if __name__ == "__main__":
 
     for key in [
             'mean_ttft_ms', 'median_ttft_ms', 'p99_ttft_ms', 'mean_itl_ms',
-            'median_itl_ms', 'p99_itl_ms'
+            'median_itl_ms', 'p99_itl_ms','mean_tpot_ms','median_tpot_ms'
     ]:
 
         fig, ax = plt.subplots(figsize=(11, 7))

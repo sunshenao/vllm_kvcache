@@ -276,6 +276,7 @@ async def async_request_openai_completions(
                     first_chunk_received = False
                     async for chunk_bytes in response.content:
                         chunk_bytes = chunk_bytes.strip()
+                        # print(chunk_bytes)
                         if not chunk_bytes:
                             continue
 

@@ -38,7 +38,7 @@ class KVLookupBufferBase(ABC):
       vLLM to bypass further model forwarding by transmitting the hidden state.
     """
 
-    @abstractmethod
+    # @abstractmethod
     def insert(self, input_tokens: torch.Tensor, roi: torch.Tensor,
                key: torch.Tensor, value: torch.Tensor,
                hidden: torch.Tensor) -> None:
@@ -68,7 +68,7 @@ class KVLookupBufferBase(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
+    # @abstractmethod
     def drop_select(
             self, input_tokens: Optional[torch.Tensor],
             roi: Optional[torch.Tensor]) -> List[Optional[torch.Tensor]]:
@@ -107,3 +107,18 @@ class KVLookupBufferBase(ABC):
             NotImplementedError: This method must be implemented in subclasses.
         """
         raise NotImplementedError
+    
+
+    # @abstractmethod
+    def async_insert(self, input_tokens: torch.Tensor, roi: torch.Tensor,
+               key: torch.Tensor, value: torch.Tensor,
+               hidden: torch.Tensor) -> None:
+        
+        raise NotImplementedError
+
+    # @abstractmethod
+    def async_drop_select(
+            self, input_tokens: Optional[torch.Tensor],
+            roi: Optional[torch.Tensor]) -> List[Optional[torch.Tensor]]:
+        raise NotImplementedError
+
