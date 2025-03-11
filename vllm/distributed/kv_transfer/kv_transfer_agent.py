@@ -119,3 +119,56 @@ class KVTransferAgent:
 
         return await self.connector.async_recv_kv_caches_and_hidden_states(
             model_executable, model_input, kv_caches,**kwargs)
+    
+
+
+    def thread_recv_kv_caches_and_hidden_states(
+        self, model_executable: torch.nn.Module,
+        model_input: "ModelInputForGPUWithSamplingMetadata",
+        kv_caches: List[torch.Tensor],
+        **kwargs,
+    ) -> Tuple[Union[torch.Tensor, IntermediateTensors], bool,
+               "ModelInputForGPUWithSamplingMetadata"]:
+
+        return self.connector.thread_recv_kv_caches_and_hidden_states(
+            model_executable, model_input, kv_caches,**kwargs)
+    
+
+    def thread_send_kv_caches_and_hidden_states(
+        self,
+        model_executable: torch.nn.Module,
+        model_input: "ModelInputForGPUWithSamplingMetadata",
+        kv_caches: List[torch.Tensor],
+        hidden_or_intermediate_states: Union[torch.Tensor,
+                                             IntermediateTensors],
+    ) -> None:
+
+        self.connector.thread_send_kv_caches_and_hidden_states(
+            model_executable, model_input, kv_caches,
+            hidden_or_intermediate_states)
+        
+
+    def process_recv_kv_caches_and_hidden_states(
+        self, model_executable: torch.nn.Module,
+        model_input: "ModelInputForGPUWithSamplingMetadata",
+        kv_caches: List[torch.Tensor],
+        **kwargs,
+    ) -> Tuple[Union[torch.Tensor, IntermediateTensors], bool,
+               "ModelInputForGPUWithSamplingMetadata"]:
+
+        return self.connector.process_recv_kv_caches_and_hidden_states(
+            model_executable, model_input, kv_caches,**kwargs)
+    
+
+    def process_send_kv_caches_and_hidden_states(
+        self,
+        model_executable: torch.nn.Module,
+        model_input: "ModelInputForGPUWithSamplingMetadata",
+        kv_caches: List[torch.Tensor],
+        hidden_or_intermediate_states: Union[torch.Tensor,
+                                             IntermediateTensors],
+    ) -> None:
+
+        self.connector.process_send_kv_caches_and_hidden_states(
+            model_executable, model_input, kv_caches,
+            hidden_or_intermediate_states)

@@ -133,6 +133,14 @@ class StatelessProcessGroup:
         self.send_dst_counter[dst] += 1
         self.entries.append((key, time.time()))
 
+    async def async_send_obj(self, obj: Any, dst: int):
+        """Send an object to a destination rank."""
+        self.expire_data()
+        key = f"send_to/{dst}/{self.send_dst_counter[dst]}"
+        self.store.set(key, pickle.dumps(obj))
+        self.send_dst_counter[dst] += 1
+        self.entries.append((key, time.time()))
+
     def expire_data(self):
         """Expire data that is older than `data_expiration_seconds` seconds."""
         while self.entries:
@@ -145,6 +153,14 @@ class StatelessProcessGroup:
                 break
 
     def recv_obj(self, src: int) -> Any:
+        """Receive an object from a source rank."""
+        obj = pickle.loads(
+            self.store.get(
+                f"send_to/{self.rank}/{self.recv_src_counter[src]}"))
+        self.recv_src_counter[src] += 1
+        return obj
+    
+    async def async_recv_obj(self, src: int) -> Any:
         """Receive an object from a source rank."""
         obj = pickle.loads(
             self.store.get(

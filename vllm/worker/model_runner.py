@@ -1598,13 +1598,10 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
     _model_input_cls: Type[ModelInputForGPUWithSamplingMetadata] = (
         ModelInputForGPUWithSamplingMetadata)
     _builder_cls: Type[ModelInputForGPUBuilder] = ModelInputForGPUBuilder
+    # 暂时用于计数使用
     num: int = 0
-    send_num: int = 0
-    recv_dict: dict = {}
-    prefill_num:int = 0
-    context = multiprocessing.get_context("spawn")
-
-    transfed_dict = {}
+    send_num = 0
+    sum_time = 0
 
     def make_model_input_from_broadcasted_tensor_dict(
         self,
@@ -1680,9 +1677,6 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
 
       
         model_executable = self.model
-
-        bypass_model_exec = False
-        a = time.time()
         
         hidden_or_intermediate_states, bypass_model_exec, model_input = \
             asyncio.run(get_kv_transfer_group().recv_kv_caches_and_hidden_states(
@@ -1693,22 +1687,12 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                 model_input,
                 kv_caches=kv_caches,
             ))
-
-        self.num += model_input.attn_metadata.num_prefills
-        self.send_num += model_input.attn_metadata.num_prefill_tokens
-        print('传输时间为: ',(time.time() -a)*1000,self.num,bypass_model_exec,threading.current_thread().ident)
-        if threading.current_thread() is threading.main_thread():
-            print("运行在主线程")
-        else:
-            print("运行在子线程")
-
-        
+    
         self.transfed_dict[model_input.input_id] = hidden_or_intermediate_states
 
         return []
 
-        
-        
+          
     @torch.inference_mode()
     def execute_model(
         self,
@@ -1760,13 +1744,8 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
         bypass_model_exec = False
         a = time.time()
         if self.need_recv_kv(model_input, kv_caches):
-        # if model_input.input_id in self.transfed_dict.keys():
-            # bypass_model_exec = True
-            # hidden_or_intermediate_states = self.transfed_dict.pop(model_input.input_id)
-            # self.transfed_dict.
-            # hidden_or_intermediate_states = 
             hidden_or_intermediate_states, bypass_model_exec, model_input = \
-                asyncio.run(get_kv_transfer_group().async_recv_kv_caches_and_hidden_states(
+                get_kv_transfer_group().recv_kv_caches_and_hidden_states(
                     # model is used to know which layer the current worker
                     # is working on, so that we can receive KV for only those
                     # layers.
@@ -1774,7 +1753,8 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                     model_input,
                     # kv_caches=kv_caches
                     kv_caches=kv_caches,
-                ))
+                )
+            self.sum_time += (time.time() -a)*1000
             # hidden_or_intermediate_states = torch.randn((len(model_input.input_tokens),3584),
             #                                             device=self.device,
             #                                             dtype=self.model_config.dtype)
@@ -1782,7 +1762,7 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
 
             self.num += model_input.attn_metadata.num_prefills
             self.send_num += model_input.attn_metadata.num_prefill_tokens
-            print('传输时间为: ',(time.time() -a)*1000,self.num,bypass_model_exec,threading.current_thread().ident)
+            print('传输时间为: ',self.sum_time/self.num,self.num,bypass_model_exec,threading.current_thread().ident)
             if threading.current_thread() is threading.main_thread():
                 print("运行在主线程")
             else:
@@ -1823,8 +1803,8 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
         if self.need_send_kv(model_input, kv_caches):
             # prefill_send = torch.cuda.Stream()
             # with torch.cuda.stream(prefill_send):
-            a = time.time()
-            asyncio.run(get_kv_transfer_group().async_send_kv_caches_and_hidden_states(
+            # a = time.time()
+            get_kv_transfer_group().send_kv_caches_and_hidden_states(
                 # model_executable is used to know which layer the current
                 # worker is working on, so that we can send KV for only those
                 # layers.
@@ -1832,10 +1812,8 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                 model_input,
                 kv_caches,
                 hidden_or_intermediate_states,
-            ))
-            print('发送耗时为： ',(time.time()-a) * 1000)
-        
-        
+            )
+            # print('发送耗时为： ',(time.time()-a) * 1000)
 
         # Compute the logits in the last pipeline stage.
         if not get_pp_group().is_last_rank:

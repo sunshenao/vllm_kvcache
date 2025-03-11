@@ -20,12 +20,6 @@ More than that tongue that more hath more express'd.
 But that thou none lovest is most evident;
 Though thou repent, yet I have still the loss:
 Or any of these all, or all, or more,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 All losses are restored and sorrows end.
 To dry the rain on my storm-beaten face,
 Which erst from heat did canopy the herd,
@@ -44,17 +38,17 @@ O, change thy thought, that I may change my mind!
 The sad account of fore-bemoaned moan,
 And every fair with his fair doth rehearse
 Making a famine where abundance lies,
+Save that my soul's imaginary sight
+Sets you most rich in youth before my sight,
+But things removed that hidden in thee lie!
+After a thousand victories once foil'd,
+
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-Save that my soul's imaginary sight
-Sets you most rich in youth before my sight,
-But things removed that hidden in thee lie!
-After a thousand victories once foil'd,
-
 And burn the long-lived phoenix in her blood;
 Flatter the mountain-tops with sovereign eye,
 That on himself such murderous shame commits.
@@ -68,12 +62,6 @@ And heavily from woe to woe tell o'er
 Such heavenly touches ne'er touch'd earthly faces.'
 But if thou live, remember'd not to be,
 And die as fast as they see others grow;
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Him in thy course untainted do allow
 Excusing thy sins more than thy sins are;
 Which, used, lives th' executor to be.
@@ -92,12 +80,6 @@ Then look I death my days should expiate.
 Harsh featureless and rude, barrenly perish:
 Unlook'd on diest, unless thou get a son.
 From his low tract and look another way:
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 And dumb presagers of my speaking breast,
 Unlook'd for joy in that I honour most.
 But thy eternal summer shall not fade
@@ -108,6 +90,12 @@ Clouds and eclipses stain both moon and sun,
 And shalt by fortune once more re-survey
 Hiding thy bravery in their rotten smoke?
 Clouds and eclipses stain both moon and sun,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Mine be thy love and thy love's use their treasure.
 Vaunt in their youthful sap, at height decrease,
 The dear repose for limbs with travel tired;
@@ -116,12 +104,6 @@ Thy bosom is endeared with all hearts,
 And though they be outstripp'd by every pen,
 And make me travel forth without my cloak,
 As tender nurse her babe from faring ill.
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Although our undivided loves are one:
 Is but the seemly raiment of my heart,
 So should my papers yellow'd with their age
@@ -140,12 +122,6 @@ And that unfair which fairly doth excel:
 That thou consumest thyself in single life?
 For precious friends hid in death's dateless night,
 And your sweet semblance to some other give.
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 And there reigns love and all love's loving parts,
 Thou of thyself thy sweet self dost deceive.
 That use is not forbidden usury,
@@ -161,15 +137,15 @@ The perfect ceremony of love's rite,
 Then look I death my days should expiate.
 Vaunt in their youthful sap, at height decrease,
 And, constant stars, in them I read such art
-Take all my comfort of thy worth and truth.
-Will be a tatter'd weed, of small worth held:
-Within thine own bud buriest thy content
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Take all my comfort of thy worth and truth.
+Will be a tatter'd weed, of small worth held:
+Within thine own bud buriest thy content
 Yet doth it steal sweet hours from love's delight.
 From his low tract and look another way:
 Beauty o'ersnow'd and bareness every where:
@@ -188,12 +164,6 @@ O, carve not with thy hours my love's fair brow,
 Where all the treasure of thy lusty days,
 Thou of thyself thy sweet self dost deceive.
 I make my love engrafted to this store:
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 If the true concord of well-tuned sounds,
 Of plagues, of dearths, or seasons' quality;
 How can I then return in happy plight,
@@ -212,14 +182,14 @@ If I could write the beauty of your eyes
 Resembling strong youth in his middle age,
 And often is his gold complexion dimm'd;
 Make war upon this bloody tyrant, Time?
+My glass shall not persuade me I am old,
+Him in thy course untainted do allow
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-My glass shall not persuade me I am old,
-Him in thy course untainted do allow
 And summer's green all girded up in sheaves
 But not to tell of good or evil luck,
 And thou, all they, hast all the all of me.
@@ -236,12 +206,6 @@ You had a father: let your son say so.
 Let those whom Nature hath not made for store,
 Of plagues, of dearths, or seasons' quality;
 Let me confess that we two must be twain,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 To find where your true image pictured lies;
 To hear with eyes belongs to love's fine wit.
 And keep my drooping eyelids open wide,
@@ -260,12 +224,6 @@ Now stand you on the top of happy hours,
 To change your day of youth to sullied night;
 Till then not show my head where thou mayst prove me.
 With virtuous wish would bear your living flowers,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 And in themselves their pride lies buried,
 If thou couldst answer 'This fair child of mine
 The age to come would say 'This poet lies:
@@ -273,6 +231,12 @@ Which to repair should be thy chief desire.
 Then what could death do, if thou shouldst depart,
 A man in hue, all 'hues' in his controlling,
 So long lives this and this gives life to thee.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 As any mother's child, though not so bright
 And night doth nightly make grief's strength seem stronger.
 With all triumphant splendor on my brow;
@@ -283,13 +247,7 @@ But if the while I think on thee, dear friend,
 With ugly rack on his celestial face,
 Thy bosom is endeared with all hearts,
 So thou, thyself out-going in thy noon,
-This wish I have; then ten times happy me!<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-To find where your true image pictured lies;
+This wish I have; then ten times happy me!To find where your true image pictured lies;
 Unthrifty loveliness, why dost thou spend
 Makes black night beauteous and her old face new.
 I make my love engrafted to this store:
@@ -307,12 +265,6 @@ They draw but what they see, know not the heart.
 Anon permit the basest clouds to ride
 Herein lives wisdom, beauty and increase:
 So I, made lame by fortune's dearest spite,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 For having traffic with thyself alone,
 O, then vouchsafe me but this loving thought:
 Then the conceit of this inconstant stay
@@ -325,18 +277,18 @@ But flowers distill'd though they with winter meet,
 With shifting change, as is false women's fashion;
 Let those who are in favour with their stars
 And barren rage of death's eternal cold?
-Gilding pale streams with heavenly alchemy;
-Thou mayst call thine when thou from youth convertest.
-Thou that art now the world's fresh ornament
-To say, within thine own deep-sunken eyes,
-To thee I send this written embassage,
-O' let me, true in love, but truly write,
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Gilding pale streams with heavenly alchemy;
+Thou mayst call thine when thou from youth convertest.
+Thou that art now the world's fresh ornament
+To say, within thine own deep-sunken eyes,
+To thee I send this written embassage,
+O' let me, true in love, but truly write,
 Let me confess that we two must be twain,
 And 'gainst myself a lawful plea commence:
 Though thou repent, yet I have still the loss:
@@ -355,12 +307,6 @@ His tender heir might bear his memory:
 Or ten times happier, be it ten for one;
 So should that beauty which you hold in lease
 I sigh the lack of many a thing I sought,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Looking on darkness which the blind do see
 Yourself again after yourself's decease,
 To hear with eyes belongs to love's fine wit.
@@ -378,13 +324,13 @@ But when from highmost pitch, with weary car,
 An eye more bright than theirs, less false in rolling,
 Of his self-love, to stop posterity?
 And all in war with Time for love of you,
-No longer yours than you yourself here live:
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+No longer yours than you yourself here live:
 Now stand you on the top of happy hours,
 For having traffic with thyself alone,
 Nor can thy shame give physic to my grief;
@@ -403,12 +349,6 @@ My body is the frame wherein 'tis held,
 If from thyself to store thou wouldst convert;
 As a decrepit father takes delight
 Now see what good turns eyes for eyes have done:
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Disdains the tillage of thy husbandry?
 Unthrifty loveliness, why dost thou spend
 So flatter I the swart-complexion'd night,
@@ -427,16 +367,16 @@ O, change thy thought, that I may change my mind!
 Like to the lark at break of day arising
 To give away yourself keeps yourself still,
 Of plagues, of dearths, or seasons' quality;
+For where is she so fair whose unear'd womb
+Theirs for their style I'll read, his for his love.'
+Till then not show my head where thou mayst prove me.
+To dry the rain on my storm-beaten face,
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-For where is she so fair whose unear'd womb
-Theirs for their style I'll read, his for his love.'
-Till then not show my head where thou mayst prove me.
-To dry the rain on my storm-beaten face,
 Be scorn'd like old men of less truth than tongue,
 Lord of my love, to whom in vassalage
 For never-resting time leads summer on
@@ -451,12 +391,6 @@ Thy end is truth's and beauty's doom and date.
 Who heaven itself for ornament doth use
 Or ten times happier, be it ten for one;
 So then I am not lame, poor, nor despised,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Or any of these all, or all, or more,
 That's for thyself to breed another thee,
 As he takes from you, I engraft you new.
@@ -475,12 +409,6 @@ When your sweet issue your sweet form should bear.
 I may not evermore acknowledge thee,
 Hiding thy bravery in their rotten smoke?
 And all those friends which I thought buried.
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Will be a tatter'd weed, of small worth held:
 That's for thyself to breed another thee,
 Seeking that beauteous roof to ruinate
@@ -490,6 +418,12 @@ How can I then be elder than thou art?
 Looking on darkness which the blind do see
 Which I new pay as if not paid before.
 Disdains the tillage of thy husbandry?
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Unthrifty loveliness, why dost thou spend
 Flatter the mountain-tops with sovereign eye,
 Where all the treasure of thy lusty days,
@@ -499,12 +433,6 @@ Making a famine where abundance lies,
 These poor rude lines of thy deceased lover,
 Against this coming end you should prepare,
 Be not self-will'd, for thou art much too fair
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 That's for thyself to breed another thee,
 Unlook'd for joy in that I honour most.
 Unless thou take that honour from thy name:
@@ -523,12 +451,6 @@ And by addition me of thee defeated,
 Who with his fear is put besides his part,
 But things removed that hidden in thee lie!
 When in eternal lines to time thou growest:
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 And with old woes new wail my dear time's waste:
 When I perceive that men as plants increase,
 As I, not for myself, but for thee will;
@@ -543,16 +465,16 @@ Disdains the tillage of thy husbandry?
 To march in ranks of better equipage:
 That I an accessary needs must be
 When I behold the violet past prime,
-But wherefore do not you a mightier way
-All losses are restored and sorrows end.
-Thou dost beguile the world, unbless some mother.
-Mine eyes have drawn thy shape, and thine for me
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+But wherefore do not you a mightier way
+All losses are restored and sorrows end.
+Thou dost beguile the world, unbless some mother.
+Mine eyes have drawn thy shape, and thine for me
 A liquid prisoner pent in walls of glass,
 And threescore year would make the world away.
 Hung with the trophies of my lovers gone,
@@ -571,12 +493,6 @@ Whereon the stars in secret influence comment;
 If thou couldst answer 'This fair child of mine
 And often is his gold complexion dimm'd;
 Or ten times happier, be it ten for one;
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 And dig deep trenches in thy beauty's field,
 More than that tongue that more hath more express'd.
 And perspective it is the painter's art.
@@ -595,13 +511,13 @@ Beauty o'ersnow'd and bareness every where:
 To witness duty, not to show my wit:
 To hear with eyes belongs to love's fine wit.
 I sigh the lack of many a thing I sought,
+Then, were not summer's distillation left,
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-Then, were not summer's distillation left,
 The offender's sorrow lends but weak relief
 And moan the expense of many a vanish'd sight:
 Ah! but those tears are pearl which thy love sheds,
@@ -619,12 +535,6 @@ I sigh the lack of many a thing I sought,
 So thou through windows of thine age shall see
 How much more praise deserved thy beauty's use,
 Excusing thy sins more than thy sins are;
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 So long lives this and this gives life to thee.
 'Tis not enough that through the cloud thou break,
 To that sweet thief which sourly robs from me.
@@ -643,18 +553,18 @@ Neither in inward worth nor outward fair,
 Let them say more than like of hearsay well;
 Roses have thorns, and silver fountains mud;
 For to thy sensual fault I bring in sense--
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Now stand you on the top of happy hours,
 For having traffic with thyself alone,
 Yet in these thoughts myself almost despising,
 When day's oppression is not eased by night,
 When forty winters shall beseige thy brow,
 The age to come would say 'This poet lies:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 May make seem bare, in wanting words to show it,
 When forty winters shall beseige thy brow,
 No more be grieved at that which thou hast done:
@@ -667,12 +577,6 @@ When forty winters shall beseige thy brow,
 And barren rage of death's eternal cold?
 But thou, contracted to thine own bright eyes,
 As a decrepit father takes delight
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 How many a holy and obsequious tear
 Of his self-love, to stop posterity?
 Why didst thou promise such a beauteous day,
@@ -691,12 +595,6 @@ The lovely gaze where every eye doth dwell,
 Which husbandry in honour might uphold
 Which though it alter not love's sole effect,
 Beauty's effect with beauty were bereft,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Nor thou with public kindness honour me,
 Pointing to each his thunder, rain and wind,
 And every fair from fair sometime declines,
@@ -708,6 +606,12 @@ The eyes, 'fore duteous, now converted are
 That I in thy abundance am sufficed
 Then how, when nature calls thee to be gone,
 Which in thy breast doth live, as thine in me:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Then what could death do, if thou shouldst depart,
 To let base clouds o'ertake me in my way,
 To that sweet thief which sourly robs from me.
@@ -715,12 +619,6 @@ The sad account of fore-bemoaned moan,
 Then of thy beauty do I question make,
 That on himself such murderous shame commits.
 But day doth daily draw my sorrows longer
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Look, whom she best endow'd she gave the more;
 With virtuous wish would bear your living flowers,
 If thou couldst answer 'This fair child of mine
@@ -739,12 +637,6 @@ And in fresh numbers number all your graces,
 But from thine eyes my knowledge I derive,
 Although our undivided loves are one:
 Now is the time that face should form another;
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Make war upon this bloody tyrant, Time?
 And many maiden gardens yet unset
 Lo! thus, by day my limbs, by night my mind,
@@ -761,14 +653,14 @@ For precious friends hid in death's dateless night,
 The age to come would say 'This poet lies:
 Sets you most rich in youth before my sight,
 Featured like him, like him with friends possess'd,
-And you must live, drawn by your own sweet skill.
-Who for thyself art so unprovident.
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+And you must live, drawn by your own sweet skill.
+Who for thyself art so unprovident.
 And your true rights be term'd a poet's rage
 Thy adverse party is thy advocate--
 Make sweet some vial; treasure thou some place
@@ -787,12 +679,6 @@ Stirr'd by a painted beauty to his verse,
 Then what could death do, if thou shouldst depart,
 The dear repose for limbs with travel tired;
 And often is his gold complexion dimm'd;
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Lord of my love, to whom in vassalage
 I all alone beweep my outcast state
 By children's eyes her husband's shape in mind.
@@ -811,15 +697,15 @@ For thou art so possess'd with murderous hate
 If all were minded so, the times should cease
 But day doth daily draw my sorrows longer
 Nor can thy shame give physic to my grief;
+As an unperfect actor on the stage
+Will be a tatter'd weed, of small worth held:
+Then can I drown an eye, unused to flow,
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-As an unperfect actor on the stage
-Will be a tatter'd weed, of small worth held:
-Then can I drown an eye, unused to flow,
 And sable curls all silver'd o'er with white;
 When your sweet issue your sweet form should bear.
 And for a woman wert thou first created;
@@ -835,12 +721,6 @@ And for a woman wert thou first created;
 And fortify yourself in your decay
 Which in my bosom's shop is hanging still,
 And all in war with Time for love of you,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 From sullen earth, sings hymns at heaven's gate;
 I sigh the lack of many a thing I sought,
 Look, whom she best endow'd she gave the more;
@@ -859,12 +739,6 @@ But thy eternal summer shall not fade
 Points on me graciously with fair aspect
 Since sweets and beauties do themselves forsake
 Of public honour and proud titles boast,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Whose fresh repair if now thou not renewest,
 When I do count the clock that tells the time,
 How far I toil, still farther off from thee.
@@ -873,6 +747,12 @@ To hear with eyes belongs to love's fine wit.
 Pity the world, or else this glutton be,
 And often is his gold complexion dimm'd;
 Yet him for this my love no whit disdaineth;
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 But thou, contracted to thine own bright eyes,
 A man in hue, all 'hues' in his controlling,
 Disdains the tillage of thy husbandry?
@@ -883,12 +763,6 @@ Is from the book of honour razed quite,
 But as the riper should by time decease,
 To say, within thine own deep-sunken eyes,
 To hear with eyes belongs to love's fine wit.
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 This wish I have; then ten times happy me!Anon permit the basest clouds to ride
 Then may I dare to boast how I do love thee;
 Lo! thus, by day my limbs, by night my mind,
@@ -906,12 +780,6 @@ Such heavenly touches ne'er touch'd earthly faces.'
 But then begins a journey in my head,
 Gilding the object whereupon it gazeth;
 Beauty's effect with beauty were bereft,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Though thou repent, yet I have still the loss:
 And in fresh numbers number all your graces,
 I sigh the lack of many a thing I sought,
@@ -925,17 +793,17 @@ As I, not for myself, but for thee will;
 Shall sum my count and make my old excuse,'
 When I perceive that men as plants increase,
 Look, what an unthrift in the world doth spend
-Unthrifty loveliness, why dost thou spend
-From his low tract and look another way:
-Look in thy glass, and tell the face thou viewest
-Now see what good turns eyes for eyes have done:
-And having climb'd the steep-up heavenly hill,
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Unthrifty loveliness, why dost thou spend
+From his low tract and look another way:
+Look in thy glass, and tell the face thou viewest
+Now see what good turns eyes for eyes have done:
+And having climb'd the steep-up heavenly hill,
 O'ercharged with burden of mine own love's might.
 O, let my books be then the eloquence
 Weary with toil, I haste me to my bed,
@@ -954,12 +822,6 @@ Which in thy breast doth live, as thine in me:
 And make the earth devour her own sweet brood;
 Weary with toil, I haste me to my bed,
 Whose speechless song, being many, seeming one,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Be, as thy presence is, gracious and kind,
 Were an all-eating shame and thriftless praise.
 To be death's conquest and make worms thine heir.
@@ -1002,12 +864,6 @@ For then my thoughts, from far where I abide,
 How much more praise deserved thy beauty's use,
 Excusing thy sins more than thy sins are;
 Thou art thy mother's glass, and she in thee
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Shall I compare thee to a summer's day?
 Makes black night beauteous and her old face new.
 If thou couldst answer 'This fair child of mine
@@ -1026,17 +882,17 @@ Neither in inward worth nor outward fair,
 But day doth daily draw my sorrows longer
 Hung with the trophies of my lovers gone,
 Where all the treasure of thy lusty days,
+But when from highmost pitch, with weary car,
+And make the earth devour her own sweet brood;
+A liquid prisoner pent in walls of glass,
+Gilding pale streams with heavenly alchemy;
+Excusing thy sins more than thy sins are;
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
-But when from highmost pitch, with weary car,
-And make the earth devour her own sweet brood;
-A liquid prisoner pent in walls of glass,
-Gilding pale streams with heavenly alchemy;
-Excusing thy sins more than thy sins are;
 Since sweets and beauties do themselves forsake
 Who will believe my verse in time to come,
 O' let me, true in love, but truly write,
@@ -1050,12 +906,6 @@ By adding one thing to my purpose nothing.
 O, change thy thought, that I may change my mind!
 By children's eyes her husband's shape in mind.
 For never-resting time leads summer on
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 That then I scorn to change my state with kings.
 For having traffic with thyself alone,
 That am debarr'd the benefit of rest?
@@ -1074,12 +924,6 @@ Of plagues, of dearths, or seasons' quality;
 Where I may not remove nor be removed.
 Weary with toil, I haste me to my bed,
 But as the marigold at the sun's eye,
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 That thou consumest thyself in single life?
 Who all their parts of me to thee did give;
 And kept unused, the user so destroys it.
@@ -1090,6 +934,12 @@ And perspective it is the painter's art.
 And threescore year would make the world away.
 Serving with looks his sacred majesty;
 All losses are restored and sorrows end.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 With April's first-born flowers, and all things rare
 No longer yours than you yourself here live:
 O, therefore, love, be of thyself so wary
@@ -1098,12 +948,6 @@ Beauty's effect with beauty were bereft,
 Then the conceit of this inconstant stay
 To see his active child do deeds of youth,
 For beauty's pattern to succeeding men.
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 So thou through windows of thine age shall see
 Wishing me like to one more rich in hope,
 For thy sweet love remember'd such wealth brings
@@ -1122,12 +966,6 @@ Which, used, lives th' executor to be.
 That due of many now is thine alone:
 A man in hue, all 'hues' in his controlling,
 Of plagues, of dearths, or seasons' quality;
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 And stretched metre of an antique song:
 Feed'st thy light'st flame with self-substantial fuel,
 That thou consumest thyself in single life?
@@ -1143,15 +981,15 @@ So I, for fear of trust, forget to say
 Weary with toil, I haste me to my bed,
 Hath dear religious love stol'n from mine eye
 When to the sessions of sweet silent thought
-That this huge stage presenteth nought but shows
-Now is the time that face should form another;
-Then being ask'd where all thy beauty lies,
 <|im_end|>
 <|im_start|>assistant
 分开标志<|im_start|>system
 You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
 <|im_start|>user
 Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+That this huge stage presenteth nought but shows
+Now is the time that face should form another;
+Then being ask'd where all thy beauty lies,
 Lo! thus, by day my limbs, by night my mind,
 I may not evermore acknowledge thee,
 Which husbandry in honour might uphold
@@ -1170,12 +1008,6 @@ My body is the frame wherein 'tis held,
 And, tender churl, makest waste in niggarding.
 How much more praise deserved thy beauty's use,
 The world will be thy widow and still weep
-<|im_end|>
-<|im_start|>assistant
-分开标志<|im_start|>system
-You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
-<|im_start|>user
-Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
 Whilst I, whom fortune of such triumph bars,
 Disdains the tillage of thy husbandry?
 Thou dost beguile the world, unbless some mother.
@@ -1194,6 +1026,1321 @@ Make war upon this bloody tyrant, Time?
 Shall hate be fairer lodged than gentle love?
 And for a woman wert thou first created;
 When day's oppression is not eased by night,
+May make seem bare, in wanting words to show it,
+Thou art more lovely and more temperate:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+To say, within thine own deep-sunken eyes,
+Roses have thorns, and silver fountains mud;
+Make war upon this bloody tyrant, Time?
+Cheered and cheque'd even by the self-same sky,
+FROM fairest creatures we desire increase,
+Then let not winter's ragged hand deface
+Flatter the mountain-tops with sovereign eye,
+My love shall in my verse ever live young.
+That am debarr'd the benefit of rest?
+Which happies those that pay the willing loan;
+Against this coming end you should prepare,
+When that churl Death my bones with dust shall cover,
+How many a holy and obsequious tear
+Who for thyself art so unprovident.
+Within thine own bud buriest thy content
+Which I new pay as if not paid before.
+Doth homage to his new-appearing sight,
+I summon up remembrance of things past,
+To witness duty, not to show my wit:
+Doth homage to his new-appearing sight,
+Despite of wrinkles this thy golden time.
+All men make faults, and even I in this,
+Who with his fear is put besides his part,
+To hear with eyes belongs to love's fine wit.
+But were some child of yours alive that time,
+That's for thyself to breed another thee,
+Whose strength's abundance weakens his own heart.
+For thou art so possess'd with murderous hate
+Which I new pay as if not paid before.
+That am debarr'd the benefit of rest?
+To eat the world's due, by the grave and thee.
+Myself corrupting, salving thy amiss,
+Will be a tatter'd weed, of small worth held:
+And being frank she lends to those are free.
+Look, whom she best endow'd she gave the more;
+Or ten times happier, be it ten for one;
+Shifts but his place, for still the world enjoys it;
+And yet methinks I have astronomy,
+When day's oppression is not eased by night,
+As he takes from you, I engraft you new.
+That beauty still may live in thine or thee.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Pluck the keen teeth from the fierce tiger's jaws,
+Vaunt in their youthful sap, at height decrease,
+And summer's green all girded up in sheaves
+'Tis not enough that through the cloud thou break,
+Making a couplement of proud compare,
+So I, made lame by fortune's dearest spite,
+Yet in these thoughts myself almost despising,
+So long as youth and thou are of one date;
+Shall hate be fairer lodged than gentle love?
+May make seem bare, in wanting words to show it,
+And stretched metre of an antique song:
+Presents thy shadow to my sightless view,
+And all in war with Time for love of you,
+Make glad and sorry seasons as thou fleets,
+And only herald to the gaudy spring,
+Do in consent shake hands to torture me;
+Thy youth's proud livery, so gazed on now,
+To thee I send this written embassage,
+How can I then be elder than thou art?
+Haply I think on thee, and then my state,
+Harsh featureless and rude, barrenly perish:
+May make seem bare, in wanting words to show it,
+Mark how one string, sweet husband to another,
+Much steals men's eyes and women's souls amazeth.
+When your sweet issue your sweet form should bear.
+So I, made lame by fortune's dearest spite,
+As, thou being mine, mine is thy good report.
+Strikes each in each by mutual ordering,
+Let them say more than like of hearsay well;
+No longer yours than you yourself here live:
+Unless thou take that honour from thy name:
+Clouds and eclipses stain both moon and sun,
+As I, not for myself, but for thee will;
+Save that my soul's imaginary sight
+To thee I send this written embassage,
+Not from the stars do I my judgment pluck;
+Ah! but those tears are pearl which thy love sheds,
+Hiding thy bravery in their rotten smoke?
+Against this coming end you should prepare,
+I tell the day, to please them thou art bright
+His tender heir might bear his memory:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+And there reigns love and all love's loving parts,
+Let them say more than like of hearsay well;
+Without thy help by me be borne alone.
+Pointing to each his thunder, rain and wind,
+Thy beauty's form in table of my heart;
+And nothing 'gainst Time's scythe can make defence
+That then I scorn to change my state with kings.
+Or some fierce thing replete with too much rage,
+I make my love engrafted to this store:
+
+Make sweet some vial; treasure thou some place
+Were an all-eating shame and thriftless praise.
+Then, were not summer's distillation left,
+Authorizing thy trespass with compare,
+Although our undivided loves are one:
+Nor shall Death brag thou wander'st in his shade,
+Let me confess that we two must be twain,
+And all those friends which I thought buried.
+From sullen earth, sings hymns at heaven's gate;
+I tell the day, to please them thou art bright
+So thou, thyself out-going in thy noon,
+And every fair with his fair doth rehearse
+So should the lines of life that life repair,
+Although our undivided loves are one:
+Resembling strong youth in his middle age,
+Serving with looks his sacred majesty;
+Great princes' favourites their fair leaves spread
+Then what could death do, if thou shouldst depart,
+Those hours, that with gentle work did frame
+O, carve not with thy hours my love's fair brow,
+And weep afresh love's long since cancell'd woe,
+The perfect ceremony of love's rite,
+But day doth daily draw my sorrows longer
+Be, as thy presence is, gracious and kind,
+If all were minded so, the times should cease
+Can make you live yourself in eyes of men.
+Whilst that this shadow doth such substance give
+Looking on darkness which the blind do see
+Let me confess that we two must be twain,
+But since she prick'd thee out for women's pleasure,
+With April's first-born flowers, and all things rare
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+So then I am not lame, poor, nor despised,
+Unlook'd on diest, unless thou get a son.
+That then I scorn to change my state with kings.
+And with old woes new wail my dear time's waste:
+These poor rude lines of thy deceased lover,
+So flatter I the swart-complexion'd night,
+If ten of thine ten times refigured thee:
+And in themselves their pride lies buried,
+Clouds and eclipses stain both moon and sun,
+As those gold candles fix'd in heaven's air:
+Nor can I fortune to brief minutes tell,
+Although our undivided loves are one:
+As any mother's child, though not so bright
+And fortify yourself in your decay
+And dumb presagers of my speaking breast,
+The sad account of fore-bemoaned moan,
+That thou no form of thee hast left behind,
+Thyself thy foe, to thy sweet self too cruel.
+Much steals men's eyes and women's souls amazeth.
+Such civil war is in my love and hate
+To thee I send this written embassage,
+For through the painter must you see his skill,
+My body is the frame wherein 'tis held,
+Make glad and sorry seasons as thou fleets,
+How can I then return in happy plight,
+Grant, if thou wilt, thou art beloved of many,
+Suns of the world may stain when heaven's sun staineth.
+In one of thine, from that which thou departest;
+To that sweet thief which sourly robs from me.
+And loathsome canker lives in sweetest bud.
+Despite of wrinkles this thy golden time.
+Such heavenly touches ne'er touch'd earthly faces.'
+How far I toil, still farther off from thee.
+So should my papers yellow'd with their age
+For beauty's pattern to succeeding men.
+Which I new pay as if not paid before.
+Weary with toil, I haste me to my bed,
+Which though it alter not love's sole effect,
+Lo! in the orient when the gracious light
+Clouds and eclipses stain both moon and sun,
+All men make faults, and even I in this,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Which in my bosom's shop is hanging still,
+Such civil war is in my love and hate
+For thou art so possess'd with murderous hate
+Even so my sun one early morn did shine
+Yet in these thoughts myself almost despising,
+O'ercharged with burden of mine own love's might.
+Then, beauteous niggard, why dost thou abuse
+When forty winters shall beseige thy brow,
+But thou, contracted to thine own bright eyes,
+But that thou none lovest is most evident;
+And trouble deal heaven with my bootless cries
+Whereon the stars in secret influence comment;
+Haply I think on thee, and then my state,
+Thy beauty's form in table of my heart;
+Cheered and cheque'd even by the self-same sky,
+Stealing unseen to west with this disgrace:
+Then being ask'd where all thy beauty lies,
+Rough winds do shake the darling buds of May,
+Hung with the trophies of my lovers gone,
+Then, were not summer's distillation left,
+To work my mind, when body's work's expired:
+No longer yours than you yourself here live:
+And, tender churl, makest waste in niggarding.
+And every fair from fair sometime declines,
+With shifting change, as is false women's fashion;
+To say, within thine own deep-sunken eyes,
+Let them say more than like of hearsay well;
+And barren rage of death's eternal cold?
+That thereby beauty's rose might never die,
+Music to hear, why hear'st thou music sadly?
+Those hours, that with gentle work did frame
+Mine be thy love and thy love's use their treasure.
+Were an all-eating shame and thriftless praise.
+All men make faults, and even I in this,
+These poor rude lines of thy deceased lover,
+To that sweet thief which sourly robs from me.
+Then of thy beauty do I question make,
+For no man well of such a salve can speak
+Or any of these all, or all, or more,
+And look upon myself and curse my fate,
+In one of thine, from that which thou departest;
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+And all the rest forgot for which he toil'd:
+As an unperfect actor on the stage
+And all in war with Time for love of you,
+And sable curls all silver'd o'er with white;
+Whose fresh repair if now thou not renewest,
+Then, were not summer's distillation left,
+But flowers distill'd though they with winter meet,
+Nor shall Death brag thou wander'st in his shade,
+Are windows to my breast, where-through the sun
+And look upon myself and curse my fate,
+If thou couldst answer 'This fair child of mine
+As interest of the dead, which now appear
+Were an all-eating shame and thriftless praise.
+That heaven's air in this huge rondure hems.
+How far I toil, still farther off from thee.
+For through the painter must you see his skill,
+Although our undivided loves are one:
+Which husbandry in honour might uphold
+As I, not for myself, but for thee will;
+Die single, and thine image dies with thee.
+And then believe me, my love is as fair
+Which I by lacking have supposed dead,
+By unions married, do offend thine ear,
+O, change thy thought, that I may change my mind!
+Then may I dare to boast how I do love thee;
+For thou art so possess'd with murderous hate
+Which to repair should be thy chief desire.
+For to thy sensual fault I bring in sense--
+This wish I have; then ten times happy me!If ten of thine ten times refigured thee:
+'Tis not enough that through the cloud thou break,
+With sun and moon, with earth and sea's rich gems,
+Where all the treasure of thy lusty days,
+O, therefore, love, be of thyself so wary
+Mine eyes have drawn thy shape, and thine for me
+Thy youth's proud livery, so gazed on now,
+When, in disgrace with fortune and men's eyes,
+And all those friends which I thought buried.
+Thou art thy mother's glass, and she in thee
+They draw but what they see, know not the heart.
+And stretched metre of an antique song:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+But beauty's waste hath in the world an end,
+You should live twice; in it and in my rhyme.
+Leaving thee living in posterity?
+So should that beauty which you hold in lease
+Unlook'd for joy in that I honour most.
+But thy eternal summer shall not fade
+That heaven's air in this huge rondure hems.
+Stirr'd by a painted beauty to his verse,
+How many a holy and obsequious tear
+Which husbandry in honour might uphold
+Thy bosom is endeared with all hearts,
+But if thou live, remember'd not to be,
+Neither in inward worth nor outward fair,
+You had a father: let your son say so.
+Be scorn'd like old men of less truth than tongue,
+That due of many now is thine alone:
+Yet, do thy worst, old Time: despite thy wrong,
+I make my love engrafted to this store:
+But since he died and poets better prove,
+For never-resting time leads summer on
+That thou among the wastes of time must go,
+Within thine own bud buriest thy content
+That am debarr'd the benefit of rest?
+Thou that art now the world's fresh ornament
+But out, alack! he was but one hour mine;
+Sweets with sweets war not, joy delights in joy.
+With means more blessed than my barren rhyme?
+Thou dost beguile the world, unbless some mother.
+And summer's green all girded up in sheaves
+Cheered and cheque'd even by the self-same sky,
+This were to be new made when thou art old,
+Featured like him, like him with friends possess'd,
+For then my thoughts, from far where I abide,
+But not to tell of good or evil luck,
+Their images I loved I view in thee,
+Despite of wrinkles this thy golden time.
+And see thy blood warm when thou feel'st it cold.
+And yet methinks I have astronomy,
+To dry the rain on my storm-beaten face,
+And night doth nightly make grief's strength seem stronger.
+And all the rest forgot for which he toil'd:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+As those gold candles fix'd in heaven's air:
+The sad account of fore-bemoaned moan,
+And fortify yourself in your decay
+When forty winters shall beseige thy brow,
+And heavily from woe to woe tell o'er
+Unlook'd on diest, unless thou get a son.
+When I perceive that men as plants increase,
+But not to tell of good or evil luck,
+Beauty o'ersnow'd and bareness every where:
+You had a father: let your son say so.
+yet mortal looks adore his beauty still,
+Who plead for love and look for recompense
+Whilst I, whom fortune of such triumph bars,
+Making a famine where abundance lies,
+And stretched metre of an antique song:
+With April's first-born flowers, and all things rare
+Gilding pale streams with heavenly alchemy;
+Make glad and sorry seasons as thou fleets,
+But if thou live, remember'd not to be,
+Proving his beauty by succession thine!
+But since he died and poets better prove,
+And with old woes new wail my dear time's waste:
+A dearer birth than this his love had brought,
+Shall hate be fairer lodged than gentle love?
+They draw but what they see, know not the heart.
+Profitless usurer, why dost thou use
+But things removed that hidden in thee lie!
+So should that beauty which you hold in lease
+In our two loves there is but one respect,
+And often is his gold complexion dimm'd;
+Thy youth's proud livery, so gazed on now,
+Nor can thy shame give physic to my grief;
+Thy beauty's form in table of my heart;
+And threescore year would make the world away.
+Then being ask'd where all thy beauty lies,
+Or else of thee this I prognosticate:
+Then what could death do, if thou shouldst depart,
+And every fair with his fair doth rehearse
+Which happies those that pay the willing loan;
+Resembling strong youth in his middle age,
+No more be grieved at that which thou hast done:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Mine eyes have drawn thy shape, and thine for me
+No love toward others in that bosom sits
+Stealing unseen to west with this disgrace:
+Thy beauty's form in table of my heart;
+To that sweet thief which sourly robs from me.
+When in eternal lines to time thou growest:
+The region cloud hath mask'd him from me now.
+Thy merit hath my duty strongly knit,
+Were an all-eating shame and thriftless praise.
+And kept unused, the user so destroys it.
+Without this, folly, age and cold decay:
+Serving with looks his sacred majesty;
+But beauty's waste hath in the world an end,
+The world will be thy widow and still weep
+And from the forlorn world his visage hide,
+Thou art more lovely and more temperate:
+With ugly rack on his celestial face,
+Then let not winter's ragged hand deface
+Let them say more than like of hearsay well;
+Feed'st thy light'st flame with self-substantial fuel,
+Authorizing thy trespass with compare,
+That thereby beauty's rose might never die,
+Cheered and cheque'd even by the self-same sky,
+And heavily from woe to woe tell o'er
+This wish I have; then ten times happy me!And only herald to the gaudy spring,
+As interest of the dead, which now appear
+For beauty's pattern to succeeding men.
+Then being ask'd where all thy beauty lies,
+Like to the lark at break of day arising
+The lovely gaze where every eye doth dwell,
+O, let my books be then the eloquence
+Like to the lark at break of day arising
+Then happy I, that love and am beloved
+When I consider every thing that grows
+Pity the world, or else this glutton be,
+If it were fill'd with your most high deserts?
+To him that bears the strong offence's cross.
+And your sweet semblance to some other give.
+Who for thyself art so unprovident.
+Then let not winter's ragged hand deface
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+For beauty's pattern to succeeding men.
+Till Nature, as she wrought thee, fell a-doting,
+Thou art thy mother's glass, and she in thee
+But wherefore do not you a mightier way
+Great princes' favourites their fair leaves spread
+Nor thou with public kindness honour me,
+To give away yourself keeps yourself still,
+If it were fill'd with your most high deserts?
+And often is his gold complexion dimm'd;
+The world will wail thee, like a makeless wife;
+And wear their brave state out of memory;
+Delights to peep, to gaze therein on thee;
+Sets you most rich in youth before my sight,
+Which in thy breast doth live, as thine in me:
+Their images I loved I view in thee,
+Look, what is best, that best I wish in thee:
+But out, alack! he was but one hour mine;
+And, constant stars, in them I read such art
+Within thine own bud buriest thy content
+O, let my books be then the eloquence
+By chance or nature's changing course untrimm'd;
+But beauty's waste hath in the world an end,
+Where all the treasure of thy lusty days,
+And die as fast as they see others grow;
+And moan the expense of many a vanish'd sight:
+Lest my bewailed guilt should do thee shame,
+Thy unused beauty must be tomb'd with thee,
+And from the forlorn world his visage hide,
+Shall sum my count and make my old excuse,'
+Intend a zealous pilgrimage to thee,
+Pity the world, or else this glutton be,
+Much liker than your painted counterfeit:
+Kissing with golden face the meadows green,
+And wear their brave state out of memory;
+Clouds and eclipses stain both moon and sun,
+Intend a zealous pilgrimage to thee,
+So I, for fear of trust, forget to say
+Be not self-will'd, for thou art much too fair
+When your sweet issue your sweet form should bear.
+And fortify yourself in your decay
+As tender nurse her babe from faring ill.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+And by a part of all thy glory live.
+If all were minded so, the times should cease
+O, carve not with thy hours my love's fair brow,
+Excusing thy sins more than thy sins are;
+Against the stormy gusts of winter's day
+And perspective it is the painter's art.
+Wishing me like to one more rich in hope,
+For through the painter must you see his skill,
+But day doth daily draw my sorrows longer
+Why lovest thou that which thou receivest not gladly,
+Though in our lives a separable spite,
+yet mortal looks adore his beauty still,
+How can I then be elder than thou art?
+She carved thee for her seal, and meant thereby
+Which in my bosom's shop is hanging still,
+Look, whom she best endow'd she gave the more;
+To give away yourself keeps yourself still,
+To witness duty, not to show my wit:
+Make thee another self, for love of me,
+Lo! thus, by day my limbs, by night my mind,
+And barren rage of death's eternal cold?
+Nor it nor no remembrance what it was:
+And dumb presagers of my speaking breast,
+Lifts up his burning head, each under eye
+To give away yourself keeps yourself still,
+Sets you most rich in youth before my sight,
+So thou through windows of thine age shall see
+To work my mind, when body's work's expired:
+To thee I send this written embassage,
+Like to the lark at break of day arising
+Stirr'd by a painted beauty to his verse,
+With April's first-born flowers, and all things rare
+Doth homage to his new-appearing sight,
+Mark how one string, sweet husband to another,
+That thou no form of thee hast left behind,
+Gilding the object whereupon it gazeth;
+How many a holy and obsequious tear
+But not to tell of good or evil luck,
+Even so my sun one early morn did shine
+When day's oppression is not eased by night,
+And keep my drooping eyelids open wide,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+So should that beauty which you hold in lease
+For never-resting time leads summer on
+I may not evermore acknowledge thee,
+O, then vouchsafe me but this loving thought:
+Make war upon this bloody tyrant, Time?
+Theirs for their style I'll read, his for his love.'
+Hiding thy bravery in their rotten smoke?
+Who lets so fair a house fall to decay,
+But I forbid thee one most heinous crime:
+And your sweet semblance to some other give.
+Points on me graciously with fair aspect
+The offender's sorrow lends but weak relief
+Or any of these all, or all, or more,
+How far I toil, still farther off from thee.
+And sable curls all silver'd o'er with white;
+Stealing unseen to west with this disgrace:
+That I in thy abundance am sufficed
+Against the stormy gusts of winter's day
+Although our undivided loves are one:
+Yet, do thy worst, old Time: despite thy wrong,
+Lest my bewailed guilt should do thee shame,
+And by a part of all thy glory live.
+Thy bosom is endeared with all hearts,
+To witness duty, not to show my wit:
+Ten times thyself were happier than thou art,
+That thereby beauty's rose might never die,
+As an unperfect actor on the stage
+Weary with toil, I haste me to my bed,
+For to thy sensual fault I bring in sense--
+Hast thou, the master-mistress of my passion;
+And puts apparel on my tatter'd loving,
+Yet eyes this cunning want to grace their art;
+In singleness the parts that thou shouldst bear.
+Delights to peep, to gaze therein on thee;
+For whether beauty, birth, or wealth, or wit,
+Those hours, that with gentle work did frame
+But that I hope some good conceit of thine
+And dumb presagers of my speaking breast,
+Or else of thee this I prognosticate:
+Then can I drown an eye, unused to flow,
+But thou, contracted to thine own bright eyes,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Why didst thou promise such a beauteous day,
+And all those friends which I thought buried.
+Nor shall Death brag thou wander'st in his shade,
+Which, used, lives th' executor to be.
+Be scorn'd like old men of less truth than tongue,
+O, therefore, love, be of thyself so wary
+For thou art so possess'd with murderous hate
+So long lives this and this gives life to thee.
+Haply I think on thee, and then my state,
+Roses have thorns, and silver fountains mud;
+As any mother's child, though not so bright
+Thou art the grave where buried love doth live,
+Despite of wrinkles this thy golden time.
+'Had my friend's Muse grown with this growing age,
+No more be grieved at that which thou hast done:
+Doth homage to his new-appearing sight,
+Thou art the grave where buried love doth live,
+And though they be outstripp'd by every pen,
+Stealing unseen to west with this disgrace:
+Hast thou, the master-mistress of my passion;
+And in mine own love's strength seem to decay,
+Mark how one string, sweet husband to another,
+But then begins a journey in my head,
+As he takes from you, I engraft you new.
+And only herald to the gaudy spring,
+But flowers distill'd though they with winter meet,
+When I perceive that men as plants increase,
+But out, alack! he was but one hour mine;
+Let them say more than like of hearsay well;
+Ah! but those tears are pearl which thy love sheds,
+Authorizing thy trespass with compare,
+Nature's bequest gives nothing but doth lend,
+Bearing thy heart, which I will keep so chary
+So should that beauty which you hold in lease
+Him in thy course untainted do allow
+And stretched metre of an antique song:
+Nor shall Death brag thou wander'st in his shade,
+Thou of thyself thy sweet self dost deceive.
+That due of many now is thine alone:
+And make the earth devour her own sweet brood;
+Delights to peep, to gaze therein on thee;
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+And every fair from fair sometime declines,
+But when from highmost pitch, with weary car,
+Mine be thy love and thy love's use their treasure.
+Leaving thee living in posterity?
+Exceeded by the height of happier men.
+Who all their parts of me to thee did give;
+With beauty's treasure, ere it be self-kill'd.
+Or who is he so fond will be the tomb
+Or who is he so fond will be the tomb
+And wear their brave state out of memory;
+Without thy help by me be borne alone.
+That heaven's air in this huge rondure hems.
+Be, as thy presence is, gracious and kind,
+When every private widow well may keep
+Those hours, that with gentle work did frame
+Make sweet some vial; treasure thou some place
+Thy bosom is endeared with all hearts,
+Then let not winter's ragged hand deface
+Theirs for their style I'll read, his for his love.'
+As interest of the dead, which now appear
+Then let not winter's ragged hand deface
+O' let me, true in love, but truly write,
+But as the riper should by time decease,
+But since he died and poets better prove,
+O' let me, true in love, but truly write,
+And night doth nightly make grief's strength seem stronger.
+And make the earth devour her own sweet brood;
+In thy soul's thought, all naked, will bestow it;
+Myself corrupting, salving thy amiss,
+And then believe me, my love is as fair
+Anon permit the basest clouds to ride
+Which husbandry in honour might uphold
+So great a sum of sums, yet canst not live?
+That thereby beauty's rose might never die,
+The world will be thy widow and still weep
+If thou survive my well-contented day,
+And summer's green all girded up in sheaves
+The world will wail thee, like a makeless wife;
+Make glad and sorry seasons as thou fleets,
+Let me confess that we two must be twain,
+For beauty's pattern to succeeding men.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+When your sweet issue your sweet form should bear.
+Despite of wrinkles this thy golden time.
+But when in thee time's furrows I behold,
+The world will be thy widow and still weep
+By oft predict that I in heaven find:
+When I consider every thing that grows
+When, in disgrace with fortune and men's eyes,
+By children's eyes her husband's shape in mind.
+For to thy sensual fault I bring in sense--
+The one by toil, the other to complain
+Nor shall Death brag thou wander'st in his shade,
+Stealing unseen to west with this disgrace:
+Of plagues, of dearths, or seasons' quality;
+That this huge stage presenteth nought but shows
+Beauty's effect with beauty were bereft,
+From sullen earth, sings hymns at heaven's gate;
+To change your day of youth to sullied night;
+To the wide world and all her fading sweets;
+And often is his gold complexion dimm'd;
+Unlook'd for joy in that I honour most.
+If from thyself to store thou wouldst convert;
+Ah! but those tears are pearl which thy love sheds,
+And you must live, drawn by your own sweet skill.
+Of plagues, of dearths, or seasons' quality;
+To change your day of youth to sullied night;
+Wishing me like to one more rich in hope,
+That I in thy abundance am sufficed
+Full many a glorious morning have I seen
+Nor lose possession of that fair thou owest;
+Look, whom she best endow'd she gave the more;
+The age to come would say 'This poet lies:
+Which husbandry in honour might uphold
+That on himself such murderous shame commits.
+So thou, thyself out-going in thy noon,
+Though in our lives a separable spite,
+To the wide world and all her fading sweets;
+Those hours, that with gentle work did frame
+That this huge stage presenteth nought but shows
+When I perceive that men as plants increase,
+My love shall in my verse ever live young.
+Take all my comfort of thy worth and truth.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+To see his active child do deeds of youth,
+Let them say more than like of hearsay well;
+More than that tongue that more hath more express'd.
+Where I may not remove nor be removed.
+But I forbid thee one most heinous crime:
+So long lives this and this gives life to thee.
+Then of thy beauty do I question make,
+To witness duty, not to show my wit:
+Then, beauteous niggard, why dost thou abuse
+That thou among the wastes of time must go,
+Suns of the world may stain when heaven's sun staineth.
+That thou no form of thee hast left behind,
+Unless thou take that honour from thy name:
+Or any of these all, or all, or more,
+Then look I death my days should expiate.
+Where all the treasure of thy lusty days,
+The bounteous largess given thee to give?
+If the true concord of well-tuned sounds,
+O, that you were yourself! but, love, you are
+The lovely gaze where every eye doth dwell,
+And weep afresh love's long since cancell'd woe,
+Pointing to each his thunder, rain and wind,
+Look, what an unthrift in the world doth spend
+Were an all-eating shame and thriftless praise.
+Holds in perfection but a little moment,
+That thereby beauty's rose might never die,
+And that unfair which fairly doth excel:
+So I, for fear of trust, forget to say
+For to thy sensual fault I bring in sense--
+If the true concord of well-tuned sounds,
+Do in consent shake hands to torture me;
+Or else receivest with pleasure thine annoy?
+
+To let base clouds o'ertake me in my way,
+Compare them with the bettering of the time,
+Disdains the tillage of thy husbandry?
+yet mortal looks adore his beauty still,
+Look, what an unthrift in the world doth spend
+All men make faults, and even I in this,
+Holds in perfection but a little moment,
+But if the while I think on thee, dear friend,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+If it were fill'd with your most high deserts?
+When I consider every thing that grows
+Wishing me like to one more rich in hope,
+Who plead for love and look for recompense
+Make thee another self, for love of me,
+How can I then be elder than thou art?
+Weary with toil, I haste me to my bed,
+Thou art the grave where buried love doth live,
+Lord of my love, to whom in vassalage
+Mine eyes have drawn thy shape, and thine for me
+As an unperfect actor on the stage
+Then, beauteous niggard, why dost thou abuse
+To that sweet thief which sourly robs from me.
+And keep my drooping eyelids open wide,
+As fast as thou shalt wane, so fast thou growest
+Till whatsoever star that guides my moving
+To hear with eyes belongs to love's fine wit.
+Great princes' favourites their fair leaves spread
+Thy end is truth's and beauty's doom and date.
+But when in thee time's furrows I behold,
+But as the marigold at the sun's eye,
+By unions married, do offend thine ear,
+Him in thy course untainted do allow
+To hideous winter and confounds him there;
+What acceptable audit canst thou leave?
+Though thou repent, yet I have still the loss:
+Beauty o'ersnow'd and bareness every where:
+Why didst thou promise such a beauteous day,
+Sometime too hot the eye of heaven shines,
+And stretched metre of an antique song:
+When your sweet issue your sweet form should bear.
+And many maiden gardens yet unset
+Or else of thee this I prognosticate:
+Let them say more than like of hearsay well;
+Find no determination: then you were
+Hath dear religious love stol'n from mine eye
+Look, what an unthrift in the world doth spend
+Who for thyself art so unprovident.
+Nor shall Death brag thou wander'st in his shade,
+For to thy sensual fault I bring in sense--
+And, tender churl, makest waste in niggarding.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Which, like a jewel hung in ghastly night,
+But as the riper should by time decease,
+As he takes from you, I engraft you new.
+And look upon myself and curse my fate,
+The age to come would say 'This poet lies:
+Can make you live yourself in eyes of men.
+For thou art so possess'd with murderous hate
+By chance or nature's changing course untrimm'd;
+That thou no form of thee hast left behind,
+If all were minded so, the times should cease
+Whilst I, whom fortune of such triumph bars,
+Or some fierce thing replete with too much rage,
+Authorizing thy trespass with compare,
+Unless thou take that honour from thy name:
+An eye more bright than theirs, less false in rolling,
+Nature's bequest gives nothing but doth lend,
+When I do count the clock that tells the time,
+Hast thou, the master-mistress of my passion;
+Then happy I, that love and am beloved
+Let me confess that we two must be twain,
+If ten of thine ten times refigured thee:
+Then being ask'd where all thy beauty lies,
+Kissing with golden face the meadows green,
+The sad account of fore-bemoaned moan,
+Wishing me like to one more rich in hope,
+Sometime too hot the eye of heaven shines,
+Lord of my love, to whom in vassalage
+And fortify yourself in your decay
+Music to hear, why hear'st thou music sadly?
+Cheered and cheque'd even by the self-same sky,
+I summon up remembrance of things past,
+And heavily from woe to woe tell o'er
+Yet doth it steal sweet hours from love's delight.
+The region cloud hath mask'd him from me now.
+To witness duty, not to show my wit:
+With shifting change, as is false women's fashion;
+Which, like a jewel hung in ghastly night,
+The eyes, 'fore duteous, now converted are
+Clouds and eclipses stain both moon and sun,
+For then my thoughts, from far where I abide,
+Thou gavest me thine, not to give back again.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Who will believe my verse in time to come,
+To find where your true image pictured lies;
+More than that tongue that more hath more express'd.
+Hiding thy bravery in their rotten smoke?
+So long as youth and thou are of one date;
+Who all in one, one pleasing note do sing:
+If I could write the beauty of your eyes
+That on himself such murderous shame commits.
+For no man well of such a salve can speak
+And shalt by fortune once more re-survey
+That heaven's air in this huge rondure hems.
+Why lovest thou that which thou receivest not gladly,
+Were an all-eating shame and thriftless praise.
+But flowers distill'd though they with winter meet,
+And in fresh numbers number all your graces,
+Then happy I, that love and am beloved
+The world will wail thee, like a makeless wife;
+Duty so great, which wit so poor as mine
+But since he died and poets better prove,
+When, in disgrace with fortune and men's eyes,
+Which this, Time's pencil, or my pupil pen,
+Yet eyes this cunning want to grace their art;
+I make my love engrafted to this store:
+But out, alack! he was but one hour mine;
+Yourself again after yourself's decease,
+Duty so great, which wit so poor as mine
+To be death's conquest and make worms thine heir.
+O' let me, true in love, but truly write,
+But not to tell of good or evil luck,
+Though yet, heaven knows, it is but as a tomb
+Though yet, heaven knows, it is but as a tomb
+For at a frown they in their glory die.
+Compare them with the bettering of the time,
+Sometime too hot the eye of heaven shines,
+Which happies those that pay the willing loan;
+But day doth daily draw my sorrows longer
+When sparkling stars twire not thou gild'st the even.
+In our two loves there is but one respect,
+And wear their brave state out of memory;
+Thou art more lovely and more temperate:
+Mine be thy love and thy love's use their treasure.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Why didst thou promise such a beauteous day,
+Weary with toil, I haste me to my bed,
+Within thine own bud buriest thy content
+Mark how one string, sweet husband to another,
+O, then vouchsafe me but this loving thought:
+O, therefore, love, be of thyself so wary
+Anon permit the basest clouds to ride
+And fortify yourself in your decay
+Resembling sire and child and happy mother
+That thereby beauty's rose might never die,
+And by a part of all thy glory live.
+Leese but their show; their substance still lives sweet.
+Are windows to my breast, where-through the sun
+And make the earth devour her own sweet brood;
+When I consider every thing that grows
+By adding one thing to my purpose nothing.
+Despite of wrinkles this thy golden time.
+But do not so; I love thee in such sort
+Pluck the keen teeth from the fierce tiger's jaws,
+Making a famine where abundance lies,
+With virtuous wish would bear your living flowers,
+And night doth nightly make grief's strength seem stronger.
+And summer's green all girded up in sheaves
+How far I toil, still farther off from thee.
+Featured like him, like him with friends possess'd,
+And kept unused, the user so destroys it.
+Unless thou take that honour from thy name:
+To eat the world's due, by the grave and thee.
+Theirs for their style I'll read, his for his love.'
+My love shall in my verse ever live young.
+Ten times thyself were happier than thou art,
+Which to repair should be thy chief desire.
+Thou gavest me thine, not to give back again.
+Thou mayst call thine when thou from youth convertest.
+If thou survive my well-contented day,
+Is it for fear to wet a widow's eye
+That this huge stage presenteth nought but shows
+Him in thy course untainted do allow
+When your sweet issue your sweet form should bear.
+As interest of the dead, which now appear
+Shall hate be fairer lodged than gentle love?
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+And being frank she lends to those are free.
+If ten of thine ten times refigured thee:
+My body is the frame wherein 'tis held,
+As those gold candles fix'd in heaven's air:
+Thou dost beguile the world, unbless some mother.
+That I in thy abundance am sufficed
+Nor lose possession of that fair thou owest;
+Since sweets and beauties do themselves forsake
+For thee and for myself no quiet find.
+And, tender churl, makest waste in niggarding.
+Who will believe my verse in time to come,
+For at a frown they in their glory die.
+I may not evermore acknowledge thee,
+And trouble deal heaven with my bootless cries
+But out, alack! he was but one hour mine;
+For never-resting time leads summer on
+To give away yourself keeps yourself still,
+And dig deep trenches in thy beauty's field,
+As fast as thou shalt wane, so fast thou growest
+That this huge stage presenteth nought but shows
+Which husbandry in honour might uphold
+As truth and beauty shall together thrive,
+And heavily from woe to woe tell o'er
+Unlook'd on diest, unless thou get a son.
+As interest of the dead, which now appear
+So is it not with me as with that Muse
+Yourself again after yourself's decease,
+With sun and moon, with earth and sea's rich gems,
+Be not self-will'd, for thou art much too fair
+Make glad and sorry seasons as thou fleets,
+Within thine own bud buriest thy content
+But since he died and poets better prove,
+And your sweet semblance to some other give.
+Which husbandry in honour might uphold
+And by a part of all thy glory live.
+And dumb presagers of my speaking breast,
+And many maiden gardens yet unset
+And with old woes new wail my dear time's waste:
+Or who is he so fond will be the tomb
+So long as youth and thou are of one date;
+With shifting change, as is false women's fashion;
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+To march in ranks of better equipage:
+As I, not for myself, but for thee will;
+So long as men can breathe or eyes can see,
+A woman's gentle heart, but not acquainted
+For thy sweet love remember'd such wealth brings
+And barren rage of death's eternal cold?
+O' let me, true in love, but truly write,
+But then begins a journey in my head,
+And by a part of all thy glory live.
+Points on me graciously with fair aspect
+I may not evermore acknowledge thee,
+Where wasteful Time debateth with Decay,
+And in mine own love's strength seem to decay,
+How far I toil, still farther off from thee.
+And barren rage of death's eternal cold?
+Make thee another self, for love of me,
+As, thou being mine, mine is thy good report.
+And barren rage of death's eternal cold?
+This wish I have; then ten times happy me!Exceeded by the height of happier men.
+Sings this to thee: 'thou single wilt prove none.'
+Thou art the grave where buried love doth live,
+Or any of these all, or all, or more,
+And that fresh blood which youngly thou bestowest
+For at a frown they in their glory die.
+Desiring this man's art and that man's scope,
+Unthrifty loveliness, why dost thou spend
+How many a holy and obsequious tear
+Which erst from heat did canopy the herd,
+The dear repose for limbs with travel tired;
+So shall those blots that do with me remain
+Will be a tatter'd weed, of small worth held:
+O, let my books be then the eloquence
+Look, whom she best endow'd she gave the more;
+Will play the tyrants to the very same
+For then my thoughts, from far where I abide,
+Take all my comfort of thy worth and truth.
+My love shall in my verse ever live young.
+Against the stormy gusts of winter's day
+So should my papers yellow'd with their age
+Now stand you on the top of happy hours,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Till Nature, as she wrought thee, fell a-doting,
+Make war upon this bloody tyrant, Time?
+But if thou live, remember'd not to be,
+Take all my comfort of thy worth and truth.
+Look, what is best, that best I wish in thee:
+Resembling strong youth in his middle age,
+No love toward others in that bosom sits
+If it were fill'd with your most high deserts?
+To show me worthy of thy sweet respect:
+And dig deep trenches in thy beauty's field,
+Their images I loved I view in thee,
+Now see what good turns eyes for eyes have done:
+Make thee another self, for love of me,
+Kissing with golden face the meadows green,
+And in themselves their pride lies buried,
+That thou among the wastes of time must go,
+And every fair with his fair doth rehearse
+Take all my comfort of thy worth and truth.
+Shall sum my count and make my old excuse,'
+But then begins a journey in my head,
+And though they be outstripp'd by every pen,
+Till whatsoever star that guides my moving
+In thee thy summer, ere thou be distill'd:
+As an unperfect actor on the stage
+When to the sessions of sweet silent thought
+With virtuous wish would bear your living flowers,
+How can I then be elder than thou art?
+For thou art so possess'd with murderous hate
+Borne on the bier with white and bristly beard,
+But if the while I think on thee, dear friend,
+And make the earth devour her own sweet brood;
+Such heavenly touches ne'er touch'd earthly faces.'
+Sap cheque'd with frost and lusty leaves quite gone,
+If from thyself to store thou wouldst convert;
+With shifting change, as is false women's fashion;
+When every private widow well may keep
+But if the while I think on thee, dear friend,
+That this huge stage presenteth nought but shows
+But beauty's waste hath in the world an end,
+Which erst from heat did canopy the herd,
+As interest of the dead, which now appear
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+For no man well of such a salve can speak
+Yet doth it steal sweet hours from love's delight.
+Making a famine where abundance lies,
+But day doth daily draw my sorrows longer
+Gilding the object whereupon it gazeth;
+Beauty o'ersnow'd and bareness every where:
+For shame! deny that thou bear'st love to any,
+Without this, folly, age and cold decay:
+And all in war with Time for love of you,
+And often is his gold complexion dimm'd;
+Thy adverse party is thy advocate--
+Now is the time that face should form another;
+To work my mind, when body's work's expired:
+O, then vouchsafe me but this loving thought:
+But not to tell of good or evil luck,
+Grant, if thou wilt, thou art beloved of many,
+That thou consumest thyself in single life?
+And see the brave day sunk in hideous night;
+That use is not forbidden usury,
+With sun and moon, with earth and sea's rich gems,
+Grant, if thou wilt, thou art beloved of many,
+To eat the world's due, by the grave and thee.
+By children's eyes her husband's shape in mind.
+How many a holy and obsequious tear
+And many maiden gardens yet unset
+With all triumphant splendor on my brow;
+That I an accessary needs must be
+That on himself such murderous shame commits.
+And then believe me, my love is as fair
+Even so my sun one early morn did shine
+Which in thy breast doth live, as thine in me:
+Doth homage to his new-appearing sight,
+Who for thyself art so unprovident.
+I make my love engrafted to this store:
+When I do count the clock that tells the time,
+Flatter the mountain-tops with sovereign eye,
+For precious friends hid in death's dateless night,
+The one by toil, the other to complain
+Presents thy shadow to my sightless view,
+And with old woes new wail my dear time's waste:
+Compare them with the bettering of the time,
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Thou dost beguile the world, unbless some mother.
+Doth homage to his new-appearing sight,
+Nor draw no lines there with thine antique pen;
+Who all in one, one pleasing note do sing:
+Till Nature, as she wrought thee, fell a-doting,
+Pluck the keen teeth from the fierce tiger's jaws,
+Then, were not summer's distillation left,
+Upon thyself thy beauty's legacy?
+Feed'st thy light'st flame with self-substantial fuel,
+But things removed that hidden in thee lie!
+Die single, and thine image dies with thee.
+I may not evermore acknowledge thee,
+Or any of these all, or all, or more,
+I tell the day, to please them thou art bright
+So should my papers yellow'd with their age
+And that fresh blood which youngly thou bestowest
+With means more blessed than my barren rhyme?
+Against the stormy gusts of winter's day
+Then the conceit of this inconstant stay
+Makes black night beauteous and her old face new.
+Why didst thou promise such a beauteous day,
+Then what could death do, if thou shouldst depart,
+No love toward others in that bosom sits
+Strikes each in each by mutual ordering,
+How much more praise deserved thy beauty's use,
+O, then vouchsafe me but this loving thought:
+Yet, do thy worst, old Time: despite thy wrong,
+Disdains the tillage of thy husbandry?
+The age to come would say 'This poet lies:
+So should my papers yellow'd with their age
+Like to the lark at break of day arising
+And trouble deal heaven with my bootless cries
+But flowers distill'd though they with winter meet,
+My body is the frame wherein 'tis held,
+For beauty's pattern to succeeding men.
+Making a famine where abundance lies,
+Which happies those that pay the willing loan;
+After a thousand victories once foil'd,
+By oft predict that I in heaven find:
+Lest my bewailed guilt should do thee shame,
+But I forbid thee one most heinous crime:
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+But that I hope some good conceit of thine
+But flowers distill'd though they with winter meet,
+Nor lose possession of that fair thou owest;
+When day's oppression is not eased by night,
+That due of many now is thine alone:
+If the true concord of well-tuned sounds,
+Then the conceit of this inconstant stay
+And every fair from fair sometime declines,
+Which hides your life and shows not half your parts.
+By chance or nature's changing course untrimm'd;
+She carved thee for her seal, and meant thereby
+But if the while I think on thee, dear friend,
+The offender's sorrow lends but weak relief
+O, none but unthrifts! Dear my love, you know
+Now see what good turns eyes for eyes have done:
+When I consider every thing that grows
+Is but the seemly raiment of my heart,
+Points on me graciously with fair aspect
+But I forbid thee one most heinous crime:
+Where I may not remove nor be removed.
+And night doth nightly make grief's strength seem stronger.
+And shalt by fortune once more re-survey
+So thou, thyself out-going in thy noon,
+Sings this to thee: 'thou single wilt prove none.'
+My love shall in my verse ever live young.
+For beauty's pattern to succeeding men.
+But if the while I think on thee, dear friend,
+Hast thou, the master-mistress of my passion;
+'Tis not enough that through the cloud thou break,
+Like to the lark at break of day arising
+Nor draw no lines there with thine antique pen;
+But things removed that hidden in thee lie!
+By chance or nature's changing course untrimm'd;
+Who lets so fair a house fall to decay,
+And you must live, drawn by your own sweet skill.
+And stretched metre of an antique song:
+Let those who are in favour with their stars
+This were to be new made when thou art old,
+For thee and for myself no quiet find.
+Unless thou take that honour from thy name:
+You should live twice; in it and in my rhyme.
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Or who is he so fond will be the tomb
+By unions married, do offend thine ear,
+Then how, when nature calls thee to be gone,
+Seeking that beauteous roof to ruinate
+For precious friends hid in death's dateless night,
+
+Anon permit the basest clouds to ride
+And 'gainst myself a lawful plea commence:
+From his low tract and look another way:
+Resembling strong youth in his middle age,
+Nor thou with public kindness honour me,
+Nor can I fortune to brief minutes tell,
+Thy bosom is endeared with all hearts,
+His tender heir might bear his memory:
+Whilst that this shadow doth such substance give
+Thyself thy foe, to thy sweet self too cruel.
+And in mine own love's strength seem to decay,
+All men make faults, and even I in this,
+Who all their parts of me to thee did give;
+And summer's green all girded up in sheaves
+Hath dear religious love stol'n from mine eye
+Vaunt in their youthful sap, at height decrease,
+To the wide world and all her fading sweets;
+Pointing to each his thunder, rain and wind,
+And yet methinks I have astronomy,
+How can I then be elder than thou art?
+For thy sweet love remember'd such wealth brings
+Then may I dare to boast how I do love thee;
+Featured like him, like him with friends possess'd,
+Making a famine where abundance lies,
+And for a woman wert thou first created;
+Not from the stars do I my judgment pluck;
+Strikes each in each by mutual ordering,
+No more be grieved at that which thou hast done:
+Or else receivest with pleasure thine annoy?
+The eyes, 'fore duteous, now converted are
+Attending on his golden pilgrimage;
+Great princes' favourites their fair leaves spread
+O, let my books be then the eloquence
+Nor draw no lines there with thine antique pen;
+As I, not for myself, but for thee will;
+<|im_end|>
+<|im_start|>assistant
+分开标志<|im_start|>system
+You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+<|im_start|>user
+Pick as many of these verses as you can, and you are asked to write an essay based on them, in as many words as possible:
+Such civil war is in my love and hate
+To march in ranks of better equipage:
+That heals the wound and cures not the disgrace:
+And see thy blood warm when thou feel'st it cold.
+To let base clouds o'ertake me in my way,
+And dig deep trenches in thy beauty's field,
+They draw but what they see, know not the heart.
+Myself corrupting, salving thy amiss,
+But I forbid thee one most heinous crime:
+With virtuous wish would bear your living flowers,
+And your sweet semblance to some other give.
+Ah! but those tears are pearl which thy love sheds,
+And loathsome canker lives in sweetest bud.
+O, learn to read what silent love hath writ:
+Intend a zealous pilgrimage to thee,
+When your sweet issue your sweet form should bear.
+Then let not winter's ragged hand deface
+Take all my comfort of thy worth and truth.
+Unlook'd for joy in that I honour most.
+In one of thine, from that which thou departest;
+So I, made lame by fortune's dearest spite,
+O'ercharged with burden of mine own love's might.
+Against this coming end you should prepare,
+And make me travel forth without my cloak,
+Despite of wrinkles this thy golden time.
+The sad account of fore-bemoaned moan,
+Leaving thee living in posterity?
+Thy unused beauty must be tomb'd with thee,
+Which to repair should be thy chief desire.
+Intend a zealous pilgrimage to thee,
+And in mine own love's strength seem to decay,
+Much liker than your painted counterfeit:
+Leaving thee living in posterity?
+Clouds and eclipses stain both moon and sun,
+Wishing me like to one more rich in hope,
+May make seem bare, in wanting words to show it,
+Thy bosom is endeared with all hearts,
+Yet in these thoughts myself almost despising,
+The lovely gaze where every eye doth dwell,
+Yet in these thoughts myself almost despising,
+If thou survive my well-contented day,
 <|im_end|>
 <|im_start|>assistant
 分开标志

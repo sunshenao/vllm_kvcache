@@ -2,7 +2,8 @@
 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from multiprocessing import process
+from sympy import Q
+from torch.multiprocessing import Manager
 import pickle
 from queue import Queue
 import queue
@@ -16,6 +17,7 @@ from tkinter import NO
 from typing import Iterator, List, Optional, Union
 
 import cloudpickle
+import torch
 from vllm.engine.async_llm_engine import _AsyncLLMEngine
 import zmq
 
@@ -88,11 +90,11 @@ class MQLLMEngine:
         self.decode = threading.Condition() 
         self.transfer_queue = queue.Queue()
         # self.lock = threading.Lock()
-        self.engine = _AsyncLLMEngine(*args, **kwargs,transfer_queue=self.transfer_queue,transfered_con=self.condition)
+        self.engine = LLMEngine(*args, **kwargs,transfer_queue=self.transfer_queue,transfered_con=self.condition)
         self.log_requests = log_requests
         self.kv_config = self.engine.vllm_config.kv_transfer_config
         self.use_async_sockets = use_async_sockets
-        if self.use_async_sockets:
+        if self.use_async_sockets:# and not self.engine.is_profucer():
             self.engine.process_request_outputs_callback = \
                 self._async_socket_engine_callback
 
@@ -116,34 +118,41 @@ class MQLLMEngine:
         # Error state.
         self._errored_with: Optional[BaseException] = None
 
+        self.transfer_stream = torch.cuda.Stream()
         self.transfer_thread = None
         # 数据传输线程
         if self.kv_config and self.kv_config.is_kv_consumer:
+            
             self.transfer_thread = threading.Thread(
                         target=self.transfer_data,args=(self.transfer_queue,))
             self.transfer_thread.start()
 
 
-
-    def transfer_data(self, transfer_queue=None):
-        while True:
-            with self.condition:
-                # 等待直到至少有一个调度器有等待的数据
-                if not any(scheduler.have_seq_prefill() != 0 for scheduler in self.engine.scheduler):
-                    self.condition.wait()  # 让出处理资源，等待通知
-                self.engine.step(True, transfer_queue)
-
+    def transfer_data(self,transfer_queue=None):
+        
+        with torch.cuda.stream(self.transfer_stream):
+            while True:
+                with self.condition:
+                    # 等待直到至少有一个调度器有等待的数据
+                    if not any(scheduler.have_seq_prefill() != 0 for scheduler in self.engine.scheduler):
+                        self.condition.wait()  # 让出处理资源，等待通知
+    
+                    self.engine.step(True, transfer_queue)
+                    
     def run_engine_loop(self):
         """Core busy loop of the LLMEngine."""
-        thread = threading.Thread(target=self.run_step)
-        thread.start()
+        
+        # thread = threading.Thread(target=self.run_step)
+        # thread.start()
 
-        thread.join()
+        # thread.join()
+        self.run_step()
         if self.transfer_thread:
             self.transfer_thread.join()
-        # self.run_step()
+        
         
     def run_step(self):
+        # engine = manager['engine']
         while True:
             if not self.engine.has_unfinished_requests():
                 # Poll until there is work to do.
@@ -154,6 +163,10 @@ class MQLLMEngine:
                     self.engine.do_log_stats()
                     logger.debug("Waiting for new requests in engine loop.")
 
+            # with self.condition:
+            #     # 等待直到至少有一个调度器有等待的数据
+            #     if not any(scheduler.have_seq_prefill() != 0 for scheduler in self.engine.scheduler):
+            #         self.condition.notify()  # 让出处理资源，等待通知
             # Handle any input from the client.
             self.handle_new_input()
         

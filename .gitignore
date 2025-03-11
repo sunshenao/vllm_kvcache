@@ -3,7 +3,7 @@
 
 # vllm-flash-attn built from source
 vllm/vllm_flash_attn/
-
+# vllm/benchmarks/disagg_benchmarks/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

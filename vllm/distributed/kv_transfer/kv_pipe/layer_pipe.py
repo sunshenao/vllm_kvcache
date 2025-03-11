@@ -1,4 +1,5 @@
 
+import asyncio
 import threading
 import time
 import functools
@@ -88,13 +89,18 @@ class LayerPipe(KVPipeBase):
             # send = functools.partial(comm.send,stream=self.stream)
             # recv = functools.partial(comm.recv,stream=self.stream)
             send, recv = comm.send, comm.recv  # type: ignore
+            # send, recv = comm.async_send, comm.async_recv 
             # print('-='*19)
         else:
             
             send = group.send_obj
 
+            async def async_my_recv(x, src):
+                x[...] = await group.async_recv_obj(src)
+            
             def my_recv(x, src):
                 x[...] = group.recv_obj(src)
+
 
             recv = my_recv
 
@@ -166,7 +172,13 @@ class LayerPipe(KVPipeBase):
             logger.debug("KV cache transfer pipe is full. Waiting...")
             time.sleep(0.01)
 
-    async def send_tensor(self, tensor: Optional[torch.Tensor]) -> None:
+    async def async_block_if_full(self):
+
+        while self.buffer_size > self.buffer_size_thresh:
+            logger.debug("KV cache transfer pipe is full. Waiting...")
+            asyncio.sleep(0.01)
+
+    def send_tensor(self, tensor: Optional[torch.Tensor]) -> None:
 
         if self.transport_thread is None:
             self.transport_thread = ThreadPoolExecutor(max_workers=1)
@@ -184,8 +196,7 @@ class LayerPipe(KVPipeBase):
         self.transport_thread.submit(self.send_tensor_wrapper, tensor,
                                      tensor_size)
 
-    async def recv_tensor(self) -> Optional[torch.Tensor]:
-
+    def recv_tensor(self) -> Optional[torch.Tensor]:
         if self.transport_thread is None:
             self.transport_thread = ThreadPoolExecutor(max_workers=1)
 
@@ -209,11 +220,10 @@ class LayerPipe(KVPipeBase):
                    "transport_thread") and self.transport_thread is not None:
             self.transport_thread.shutdown()
 
-    
-    async def async_send_tensor(self, tensor: Optional[torch.Tensor]) -> None:
 
-        if self.transport_thread is None:
-            self.transport_thread = ThreadPoolExecutor(max_workers=1)
+    async def async_send_tensor(self, tensor: Optional[torch.Tensor]) -> None:
+        # if self.transport_thread is None:
+        #     self.transport_thread = ThreadPoolExecutor(max_workers=1)
 
         if tensor is not None:
             tensor_size = tensor.element_size() * tensor.numel()
@@ -224,19 +234,20 @@ class LayerPipe(KVPipeBase):
 
         with self.buffer_size_lock:
             self.buffer_size += tensor_size
+        self.send_tensor_wrapper(tensor, tensor_size)
 
-        self.transport_thread.submit(self.send_tensor_wrapper, tensor,
-                                     tensor_size)
+        
 
     async def async_recv_tensor(self) -> Optional[torch.Tensor]:
+        # if self.transport_thread is None:
+        #     self.transport_thread = ThreadPoolExecutor(max_workers=1)
 
-        if self.transport_thread is None:
-            self.transport_thread = ThreadPoolExecutor(max_workers=1)
-
-        future = self.transport_thread.submit(self._recv_impl)
+        # future = await asyncio.get_event_loop().run_in_executor(
+        #     self.transport_thread, self._recv_impl)
 
         try:
-            tensor = future.result()
+            # tensor = future.result()
+            tensor = self._recv_impl()
         except Exception as e:
             logger.error("Encountering exception in KV receiving thread")
             logger.error("%s", e)
@@ -246,4 +257,45 @@ class LayerPipe(KVPipeBase):
             raise e
 
         return tensor
+    
 
+    async def _async_send_metadata(self, metadata: Metadata):
+
+        self.group.send_obj(metadata, self.target_rank_for_send)
+
+    async def _async_recv_metadata(self) -> Metadata:
+        
+        return self.group.async_recv_obj(self.target_rank_for_recv)
+
+    async def _async_send_impl(self, tensor: Optional[torch.Tensor]) -> None:
+        # with torch.cuda.stream(self.send_stream):
+        metadata = self._make_metadata(tensor)
+        self._async_send_metadata(metadata)
+        if tensor is not None:
+            self.device_send_func(tensor.to(self.device),
+                                self.target_rank_for_send)
+
+    async def _async_recv_impl(self) -> Optional[torch.Tensor]:
+        # with torch.cuda.stream(self.send_stream):
+        # print("+++++")
+        metadata = self._async_recv_metadata()
+        if metadata["dtype"] is None:
+            return None
+        buffer = self._prepare_recv_buffer(metadata)
+        self.device_recv_func(buffer, self.target_rank_for_recv)
+
+        return buffer
+
+    async def async_send_tensor_wrapper(self, tensor: Optional[torch.Tensor],
+                            tensor_size: int) -> None:
+
+        try:
+            self._async_send_impl(tensor)
+
+            with self.buffer_size_lock:
+                self.buffer_size -= tensor_size
+        except Exception as e:
+            logger.error("[rank%d]: Exception when trying to send %s, msg: %s",
+                         torch.distributed.get_rank(), str(tensor), str(e))
+            import traceback
+            traceback.print_exc()

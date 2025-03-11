@@ -25,7 +25,7 @@ prompt = ['''
 llm = LLM(model='/root/models/Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4') # kv_transfer_config=kv_transfer_config
 
 # 
-sampling_params = SamplingParams(temperature=0.7, top_p=0.9, max_tokens=2000) #  max_tokens=2
+sampling_params = SamplingParams(temperature=0.7, top_p=0.9, max_tokens=3) #  max_tokens=2
 
 # 进行 prefill
 outputs = llm.generate(prompt, sampling_params)

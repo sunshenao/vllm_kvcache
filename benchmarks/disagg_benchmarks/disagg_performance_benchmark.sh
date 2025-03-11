@@ -151,23 +151,23 @@ main() {
   rm -rf results
   mkdir results
 
-  default_output_len=10
+  default_output_len=50
 
-  default_input_len=256
+  default_input_len=500
 
   export VLLM_HOST_IP=$(hostname -I | awk '{print $1}')
 
   kill_gpu_processes
 
   launch_disagg_prefill
-  for qps in 6; do
+  for qps in 8; do
   benchmark $qps $default_output_len $default_input_len disagg_prefill #disagg_prefill async_prefill
   done
 
   kill_gpu_processes
 
   launch_chunked_prefill
-  for qps in 6 ; do
+  for qps in 8; do
   benchmark $qps $default_output_len $default_input_len chunked_prefill
   done
 

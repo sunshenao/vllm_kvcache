@@ -664,6 +664,7 @@ class Scheduler:
                 # we need to ensure it has no pending async postprocessor
                 do_preempt = True
                 if self.use_async_output_proc:
+                    # 修改了后处理的调度顺序，现在已经不需要对单个request进行处理了
                     # assert self.output_proc_callback is not None
                     # self.output_proc_callback(
                     #     request_id=victim_seq_group.request_id)
@@ -1311,9 +1312,7 @@ class Scheduler:
         """Schedule queued requests."""
         if self.scheduler_config.chunked_prefill_enabled:
             return self._schedule_chunked_prefill()
-        # elif self.is_decode(): # 只有decode才需要进行新的调度
-        #     return self._shedule_disagg(transfer_data,transfer_queue)
-        
+         
         elif self.is_decode(): # 只有decode才需要进行新的调度
             return self._shedule_disagg_test(transfer_data,transfer_queue,lock_list)
         else:
@@ -1606,8 +1605,6 @@ class Scheduler:
 
         ignored_seq_groups = prefills.ignored_seq_groups
         ignored_seq_groups.extend(swapped_in.infeasible_seq_groups)
-
-        # print(len(self.running),len(self.swapped),len(self.transfered),len(self.waiting),'+'*19,transfer_data)
 
 
         return SchedulerOutputs(
